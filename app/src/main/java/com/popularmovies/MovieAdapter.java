@@ -32,10 +32,9 @@ public class MovieAdapter extends BaseAdapter {
   public View getView(int position, View convertView, ViewGroup parent) {
     ImageView imageView;
     if (convertView == null) {
-      // if it's not recycled, initialize some attributes
       imageView = new ImageView(mContext);
-      imageView.setAdjustViewBounds(true);
-      imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+      imageView.setAdjustViewBounds(true);  // Keep original aspect ratio.
+      imageView.setScaleType(ImageView.ScaleType.FIT_XY);  // Handle row and column respectively.
     } else {
       imageView = (ImageView) convertView;
     }
