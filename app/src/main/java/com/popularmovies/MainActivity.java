@@ -1,9 +1,10 @@
 package com.popularmovies;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -12,6 +13,9 @@ public class MainActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    GridView gridview = (GridView) findViewById(R.id.gridview_movies);
+    gridview.setAdapter(new MovieAdapter(this));
   }
 
 
