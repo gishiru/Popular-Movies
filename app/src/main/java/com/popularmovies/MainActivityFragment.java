@@ -1,5 +1,6 @@
 package com.popularmovies;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -43,9 +44,15 @@ public class MainActivityFragment extends Fragment {
     return rootView;
   }
 
+  /**
+   * @todo Delete API_KEY before relese.
+   */
   private class FetchMovieTask extends AsyncTask<Void, Void, ImageView> {
-    private static final String movieDbUrl =
-        "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=73430ad81f5c1925ebcbb9d175381cab";
+    private static final String API_KEY = "api_key";
+    private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
+    private static final String OWN_KEY = "73430ad81f5c1925ebcbb9d175381cab";
+    private static final String POPULARITY_DESC = "popularity.desc";
+    private static final String SORT_BY = "sort_by";
     private ImageView mMovieImage;
 
     @Override
@@ -61,7 +68,9 @@ public class MainActivityFragment extends Fragment {
 
       try {
         // Create the request to themoviedb.org, and open the connection
-        urlConnection = (HttpURLConnection) new URL(movieDbUrl).openConnection();
+        urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL).buildUpon()
+            .appendQueryParameter(SORT_BY, POPULARITY_DESC).appendQueryParameter(API_KEY, OWN_KEY)
+            .build().toString()).openConnection();
         urlConnection.setRequestMethod("GET");
         urlConnection.connect();
 
