@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,11 +52,20 @@ public class MainActivityFragment extends Fragment {
    * @todo Delete API_KEY before relese.
    */
   private class FetchMovieTask extends AsyncTask<Void, Void, ImageView> {
-    private static final String API_KEY = "api_key";
+    // Constants for building URI to call API.
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
-    private static final String OWN_KEY = "73430ad81f5c1925ebcbb9d175381cab";
-    private static final String POPULARITY_DESC = "popularity.desc";
     private static final String SORT_BY = "sort_by";
+    private static final String POPULARITY_DESC = "popularity.desc";
+    private static final String API_KEY = "api_key";
+    private static final String OWN_KEY = "73430ad81f5c1925ebcbb9d175381cab";
+    private static final String REQUEST_METHOD = "GET";
+
+    // Constants for building URL to get image.
+    private static final String IMAGE_DB_SCHEME = "http";
+    private static final String IMAGE_DB_AUTHORITY = "image.tmdb.org";
+    private static final String IMAGE_DB_PLUSPATH = "t/p";
+    private static final String IMAGE_SIZE = "w185";
+
     private ImageView mMovieImage;
 
     @Override
@@ -71,7 +84,7 @@ public class MainActivityFragment extends Fragment {
         urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL).buildUpon()
             .appendQueryParameter(SORT_BY, POPULARITY_DESC).appendQueryParameter(API_KEY, OWN_KEY)
             .build().toString()).openConnection();
-        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestMethod(REQUEST_METHOD);
         urlConnection.connect();
 
         // Read the input stream into a String
@@ -89,7 +102,21 @@ public class MainActivityFragment extends Fragment {
         if (buffer.length() == 0) {
           return null;
         }
-        Log.d(LOG_TAG, "buffer = " + buffer.toString());
+
+        try {
+          JSONObject jsonObject = new JSONObject(buffer.toString());
+          JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+          for (int i = 0; i < jsonArray.length(); i++) {
+            String url = new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
+                .path(IMAGE_DB_PLUSPATH).appendPath(IMAGE_SIZE)
+                .appendEncodedPath(jsonArray.getJSONObject(i).getString("backdrop_path")).build()
+                .toString();
+            Log.d(LOG_TAG, "url = " + url);
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
       } catch (IOException e) {
         e.printStackTrace();
         return null;
