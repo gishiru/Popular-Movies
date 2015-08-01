@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,15 +42,15 @@ public class MainActivityFragment extends Fragment {
                            Bundle savedInstanceState) {
     Log.d("MainActivityFragment", "Start fragment");
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-    GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movies);
-    gridview.setAdapter(new MovieAdapter(getActivity()));
+    GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
+    gridView.setAdapter(new MovieAdapter(getActivity()));
     return rootView;
   }
 
   /**
    * @todo Delete API_KEY before relese.
    */
-  private class FetchMovieTask extends AsyncTask<Void, Void, ImageView> {
+  private class FetchMovieTask extends AsyncTask<Void, Void, String[]> {
     // Constants for building URI to call API.
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String SORT_BY = "sort_by";
@@ -66,16 +65,15 @@ public class MainActivityFragment extends Fragment {
     private static final String IMAGE_DB_PLUSPATH = "t/p";
     private static final String IMAGE_SIZE = "w185";
 
-    private ImageView mMovieImage;
+    private String[] mUrls;
 
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
-      mMovieImage = new ImageView(getActivity());
     }
 
     @Override
-    protected ImageView doInBackground(Void... params) {
+    protected String[] doInBackground(Void... params) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
@@ -108,11 +106,11 @@ public class MainActivityFragment extends Fragment {
           JSONArray jsonArray = jsonObject.getJSONArray("results");
 
           for (int i = 0; i < jsonArray.length(); i++) {
-            String url = new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
+            mUrls[i] = new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
                 .path(IMAGE_DB_PLUSPATH).appendPath(IMAGE_SIZE)
                 .appendEncodedPath(jsonArray.getJSONObject(i).getString("backdrop_path")).build()
                 .toString();
-            Log.d(LOG_TAG, "url = " + url);
+            Log.d(LOG_TAG, "url = " + mUrls[i]);
           }
         } catch (JSONException e) {
           e.printStackTrace();
@@ -132,7 +130,7 @@ public class MainActivityFragment extends Fragment {
           }
         }
       }
-      return mMovieImage;
+      return mUrls;
     }
   }
 }
