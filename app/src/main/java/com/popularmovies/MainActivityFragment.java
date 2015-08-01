@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 /**
@@ -28,7 +29,11 @@ import java.net.URL;
 public class MainActivityFragment extends Fragment {
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
+  private MovieAdapter mMovieAdapter = null;
+  private ArrayList<String> mUrls = null;
+
   public MainActivityFragment() {
+    mUrls = new ArrayList<>();
   }
 
   @Override
@@ -43,14 +48,15 @@ public class MainActivityFragment extends Fragment {
     Log.d("MainActivityFragment", "Start fragment");
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
     GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
-    gridView.setAdapter(new MovieAdapter(getActivity()));
+    mMovieAdapter = new MovieAdapter(getActivity(), mUrls);
+    gridView.setAdapter(mMovieAdapter);
     return rootView;
   }
 
   /**
    * @todo Delete API_KEY before relese.
    */
-  private class FetchMovieTask extends AsyncTask<Void, Void, String[]> {
+  private class FetchMovieTask extends AsyncTask<Void, Void, ArrayList<String>> {
     // Constants for building URI to call API.
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String SORT_BY = "sort_by";
@@ -65,15 +71,13 @@ public class MainActivityFragment extends Fragment {
     private static final String IMAGE_DB_PLUSPATH = "t/p";
     private static final String IMAGE_SIZE = "w185";
 
-    private String[] mUrls;
-
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
     }
 
     @Override
-    protected String[] doInBackground(Void... params) {
+    protected ArrayList<String> doInBackground(Void... params) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
@@ -106,12 +110,12 @@ public class MainActivityFragment extends Fragment {
           JSONArray jsonArray = jsonObject.getJSONArray("results");
 
           for (int i = 0; i < jsonArray.length(); i++) {
-            mUrls[i] = new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
+            mUrls.add(new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
                 .path(IMAGE_DB_PLUSPATH).appendPath(IMAGE_SIZE)
                 .appendEncodedPath(jsonArray.getJSONObject(i).getString("backdrop_path")).build()
-                .toString();
-            Log.d(LOG_TAG, "url = " + mUrls[i]);
+                .toString());
           }
+          Log.d(LOG_TAG, "url = " + mUrls);
         } catch (JSONException e) {
           e.printStackTrace();
         }
@@ -131,6 +135,12 @@ public class MainActivityFragment extends Fragment {
         }
       }
       return mUrls;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<String> strings) {
+      super.onPostExecute(strings);
+      mMovieAdapter.notifyDataSetChanged();
     }
   }
 }

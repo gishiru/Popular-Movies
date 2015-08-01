@@ -6,18 +6,24 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
 /**
  * Created by gishiru on 2015/07/31.
  */
 public class MovieAdapter extends BaseAdapter {
   private Context mContext;
+  private ArrayList<String> mList = null;
 
-  public MovieAdapter(Context c) {
+  public MovieAdapter(Context c, ArrayList<String> list) {
     mContext = c;
+    mList = list;
   }
 
   public int getCount() {
-    return mThumbIds.length;
+    return mList.size();
   }
 
   public Object getItem(int position) {
@@ -39,22 +45,7 @@ public class MovieAdapter extends BaseAdapter {
       imageView = (ImageView) convertView;
     }
 
-    imageView.setImageResource(mThumbIds[position]);
+    Picasso.with(mContext).load(mList.get(position)).into(imageView);
     return imageView;
   }
-
-  // references to our images
-  private Integer[] mThumbIds = {
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0,
-      R.drawable.sample_0, R.drawable.sample_0
-  };
 }
