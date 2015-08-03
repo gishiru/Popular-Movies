@@ -6,7 +6,7 @@
         android:title="@string/pref_title_sort_order"
         android:entries="@array/pref_sort_order_titles"
         android:entryValues="@array/pref_sort_order_values"
-        android:defaultValue="popularity.desc"
+        android:defaultValue="@string/pref_default_sort_order"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
 

@@ -3,6 +3,7 @@ package com.popularmovies;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +40,9 @@ public class MainActivityFragment extends Fragment {
   @Override
   public void onStart() {
     super.onStart();
-    new FetchMovieTask().execute(null, null, null);
+    new FetchMovieTask().execute(PreferenceManager.getDefaultSharedPreferences(getActivity())
+        .getString(getString(R.string.pref_key_sort_order), getString(R.string.pref_default_sort_order)),
+        null, null);
   }
 
   @Override
@@ -56,11 +59,10 @@ public class MainActivityFragment extends Fragment {
   /**
    * @todo Delete API_KEY before relese.
    */
-  private class FetchMovieTask extends AsyncTask<Void, Void, ArrayList<String>> {
+  private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
     // Constants for building URI to call API.
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String SORT_BY = "sort_by";
-    private static final String POPULARITY_DESC = "popularity.desc";
     private static final String API_KEY = "api_key";
     private static final String OWN_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String REQUEST_METHOD = "GET";
@@ -77,14 +79,14 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
-    protected ArrayList<String> doInBackground(Void... params) {
+    protected ArrayList<String> doInBackground(String... sortOrder) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
       try {
         // Create the request to themoviedb.org, and open the connection
         urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL).buildUpon()
-            .appendQueryParameter(SORT_BY, POPULARITY_DESC).appendQueryParameter(API_KEY, OWN_KEY)
+            .appendQueryParameter(SORT_BY, sortOrder[0]).appendQueryParameter(API_KEY, OWN_KEY)
             .build().toString()).openConnection();
         urlConnection.setRequestMethod(REQUEST_METHOD);
         urlConnection.connect();
