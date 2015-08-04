@@ -32,6 +32,7 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
+  private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<String> mUrls = null;
 
@@ -58,8 +59,12 @@ public class MainActivityFragment extends Fragment {
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Start DetailActivity.
-        startActivity(new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT,
-            parent.getItemIdAtPosition(position)));
+        try {
+          startActivity(new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT,
+              mJsonArray.getJSONObject(position).toString()));
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
       }
     });
     return rootView;
@@ -119,12 +124,12 @@ public class MainActivityFragment extends Fragment {
 
         try {
           JSONObject jsonObject = new JSONObject(buffer.toString());
-          JSONArray jsonArray = jsonObject.getJSONArray("results");
+          mJsonArray = jsonObject.getJSONArray("results");
 
-          for (int i = 0; i < jsonArray.length(); i++) {
+          for (int i = 0; i < mJsonArray.length(); i++) {
             mUrls.add(new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
                 .path(IMAGE_DB_PLUSPATH).appendPath(IMAGE_SIZE)
-                .appendEncodedPath(jsonArray.getJSONObject(i).getString("backdrop_path")).build()
+                .appendEncodedPath(mJsonArray.getJSONObject(i).getString("backdrop_path")).build()
                 .toString());
           }
           Log.d(LOG_TAG, "url = " + mUrls);
