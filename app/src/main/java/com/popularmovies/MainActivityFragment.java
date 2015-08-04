@@ -30,7 +30,6 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-  private GridView mGridView = null;
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<String> mUrls = null;
 
@@ -51,9 +50,8 @@ public class MainActivityFragment extends Fragment {
                            Bundle savedInstanceState) {
     Log.d("MainActivityFragment", "Start fragment");
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-    mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
     mMovieAdapter = new MovieAdapter(getActivity(), mUrls);
-    mGridView.setAdapter(mMovieAdapter);
+    ((GridView) rootView.findViewById(R.id.gridview_movies)).setAdapter(mMovieAdapter);
     return rootView;
   }
 
@@ -77,7 +75,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
-      mUrls = new ArrayList<>();
+      mUrls.clear();
     }
 
     @Override
@@ -143,8 +141,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     protected void onPostExecute(ArrayList<String> strings) {
-      mMovieAdapter = new MovieAdapter(getActivity(), strings);
-      mGridView.setAdapter(mMovieAdapter);
+      mMovieAdapter.notifyDataSetChanged();
     }
   }
 }
