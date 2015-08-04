@@ -1,5 +1,6 @@
 package com.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -41,7 +43,7 @@ public class MainActivityFragment extends Fragment {
   public void onStart() {
     super.onStart();
     new FetchMovieTask().execute(PreferenceManager.getDefaultSharedPreferences(getActivity())
-        .getString(getString(R.string.pref_key_sort_order), getString(R.string.pref_default_sort_order)),
+            .getString(getString(R.string.pref_key_sort_order), getString(R.string.pref_default_sort_order)),
         null, null);
   }
 
@@ -51,7 +53,15 @@ public class MainActivityFragment extends Fragment {
     Log.d("MainActivityFragment", "Start fragment");
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
     mMovieAdapter = new MovieAdapter(getActivity(), mUrls);
-    ((GridView) rootView.findViewById(R.id.gridview_movies)).setAdapter(mMovieAdapter);
+    GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
+    gridView.setAdapter(mMovieAdapter);
+    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // Start DetailActivity.
+        startActivity(new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT,
+            parent.getItemIdAtPosition(position)));
+      }
+    });
     return rootView;
   }
 
