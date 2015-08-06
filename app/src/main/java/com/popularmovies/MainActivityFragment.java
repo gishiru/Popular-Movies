@@ -60,8 +60,8 @@ public class MainActivityFragment extends Fragment {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Start DetailActivity.
         try {
-          startActivity(new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT,
-              mJsonArray.getJSONObject(position).toString()));
+          startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("results",
+              mJsonArray.getJSONObject(position).toString()).putExtra("url", mUrls.get(position)));
         } catch (JSONException e) {
           e.printStackTrace();
         }
@@ -129,7 +129,7 @@ public class MainActivityFragment extends Fragment {
           for (int i = 0; i < mJsonArray.length(); i++) {
             mUrls.add(new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
                 .path(IMAGE_DB_PLUSPATH).appendPath(IMAGE_SIZE)
-                .appendEncodedPath(mJsonArray.getJSONObject(i).getString("backdrop_path")).build()
+                .appendEncodedPath(mJsonArray.getJSONObject(i).getString("poster_path")).build()
                 .toString());
           }
           Log.d(LOG_TAG, "url = " + mUrls);
