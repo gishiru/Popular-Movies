@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,7 @@ public class MainActivityFragment extends Fragment {
 
   private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
+  private ArrayList<ImageView> mPoster = null;
   private ArrayList<String> mUrls = null;
 
   public MainActivityFragment() {
@@ -61,8 +63,9 @@ public class MainActivityFragment extends Fragment {
     super.onCreate(savedInstanceState);
 
     // Initialize
+    mPoster = new ArrayList<>();
     mUrls = new ArrayList<>();
-    mMovieAdapter = new MovieAdapter(getActivity(), mUrls);
+    mMovieAdapter = new MovieAdapter(getActivity(), mPoster, mUrls);
   }
 
   @Override
@@ -83,6 +86,7 @@ public class MainActivityFragment extends Fragment {
     super.onStop();
 
     // Clear old database.
+    mPoster.clear();
     mUrls.clear();
     mMovieAdapter.notifyDataSetChanged();  // Should be called this?
   }
@@ -103,7 +107,7 @@ public class MainActivityFragment extends Fragment {
           bundle.putString(EXTRA_KEY_OVERVIEW,
               mJsonArray.getJSONObject(position).getString(JSON_KEY_OVERVIEW));
           bundle.putParcelable(EXTRA_KEY_POSTER,
-              ((BitmapDrawable) mMovieAdapter.getItem(position).getDrawable()).getBitmap());
+              ((BitmapDrawable) mMovieAdapter.getItem(position + 2).getDrawable()).getBitmap());
           bundle.putString(EXTRA_KEY_TITLE,
               mJsonArray.getJSONObject(position).getString(JSON_KEY_TITLE));
           bundle.putString(EXTRA_KEY_RELEASE_DATE,

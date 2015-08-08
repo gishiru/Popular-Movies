@@ -14,13 +14,16 @@ import java.util.ArrayList;
  * Created by gishiru on 2015/07/31.
  */
 public class MovieAdapter extends BaseAdapter {
+  /** Log tag. */
+  private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
+
   private Context mContext = null;
   private ArrayList<ImageView> mImageView = null;
   private ArrayList<String> mList = null;
 
-  public MovieAdapter(Context c, ArrayList<String> list) {
+  public MovieAdapter(Context c, ArrayList<ImageView> imageViews, ArrayList<String> list) {
     mContext = c;
-    mImageView = new ArrayList<>();
+    mImageView = imageViews;
     mList = list;
   }
 
