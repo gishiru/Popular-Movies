@@ -1,6 +1,8 @@
 package com.popularmovies;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -81,11 +83,15 @@ public class MainActivityFragment extends Fragment {
     gridView.setAdapter(mMovieAdapter);
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Start DetailActivity.
         try {
-          startActivity(new Intent(getActivity(), DetailActivity.class)
-              .putExtra("results", mJsonArray.getJSONObject(position).toString())
-              .putExtra("url", mUrls.get(position)));
+          // Put extras.
+          Bundle bundle = new Bundle();
+          bundle.putString("results", mJsonArray.getJSONObject(position).toString());
+          bundle.putParcelable("movie poster",
+              ((BitmapDrawable) mMovieAdapter.getItem(position).getDrawable()).getBitmap());
+
+          // Start DetailActivity.
+          startActivity(new Intent(getActivity(), DetailActivity.class).putExtras(bundle));
         } catch (JSONException e) {
           e.printStackTrace();
         }

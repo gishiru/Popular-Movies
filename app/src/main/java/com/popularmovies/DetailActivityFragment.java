@@ -1,5 +1,6 @@
 package com.popularmovies;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +25,10 @@ public class DetailActivityFragment extends Fragment {
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+    // Get extras.
+    Bundle extras = getActivity().getIntent().getExtras();
+    ((ImageView) rootView.findViewById(R.id.thumbnail))
+        .setImageBitmap((Bitmap) extras.getParcelable("movie poster"));
     try {
       // Get strings.
       JSONObject jsonObject = new JSONObject(
@@ -38,10 +41,6 @@ public class DetailActivityFragment extends Fragment {
           .setText(jsonObject.getString("vote_average") + "/10");
       ((TextView)rootView.findViewById(R.id.overview))
           .setText(jsonObject.getString("overview"));
-
-      // Get thumbnail.
-      Picasso.with(getActivity()).load(getActivity().getIntent().getStringExtra("url"))
-          .into((ImageView)rootView.findViewById(R.id.thumbnail));
     } catch (JSONException e) {
       e.printStackTrace();
     }

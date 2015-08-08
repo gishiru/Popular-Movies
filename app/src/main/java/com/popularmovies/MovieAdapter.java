@@ -14,11 +14,13 @@ import java.util.ArrayList;
  * Created by gishiru on 2015/07/31.
  */
 public class MovieAdapter extends BaseAdapter {
-  private Context mContext;
+  private Context mContext = null;
+  private ArrayList<ImageView> mImageView = null;
   private ArrayList<String> mList = null;
 
   public MovieAdapter(Context c, ArrayList<String> list) {
     mContext = c;
+    mImageView = new ArrayList<>();
     mList = list;
   }
 
@@ -26,8 +28,8 @@ public class MovieAdapter extends BaseAdapter {
     return mList.size();
   }
 
-  public Object getItem(int position) {
-    return null;
+  public ImageView getItem(int position) {
+    return mImageView.get(position);
   }
 
   public long getItemId(int position) {
@@ -47,6 +49,7 @@ public class MovieAdapter extends BaseAdapter {
 
     // Load image.
     Picasso.with(mContext).load(mList.get(position)).into(imageView);
+    mImageView.add(imageView);
     return imageView;
   }
 }
