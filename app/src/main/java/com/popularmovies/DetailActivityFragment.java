@@ -13,8 +13,10 @@ import android.widget.TextView;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment {
+  private MainActivityFragment mActivity = null;
 
   public DetailActivityFragment() {
+    mActivity = new MainActivityFragment();
   }
 
   @Override
@@ -24,14 +26,16 @@ public class DetailActivityFragment extends Fragment {
 
     // Get extras.
     Bundle extras = getActivity().getIntent().getExtras();
-    ((TextView)rootView.findViewById(R.id.overview)).setText(extras.getString("movie overview"));
+    ((TextView)rootView.findViewById(R.id.overview))
+        .setText(extras.getString(mActivity.EXTRA_KEY_OVERVIEW));
     ((ImageView) rootView.findViewById(R.id.thumbnail))
-        .setImageBitmap((Bitmap) extras.getParcelable("movie poster"));
-    ((TextView)rootView.findViewById(R.id.original_title)).setText(extras.getString("movie title"));
+        .setImageBitmap((Bitmap) extras.getParcelable(mActivity.EXTRA_KEY_POSTER));
+    ((TextView)rootView.findViewById(R.id.original_title))
+        .setText(extras.getString(mActivity.EXTRA_KEY_TITLE));
     ((TextView)rootView.findViewById(R.id.release_date))
-        .setText(extras.getString("movie release date"));
+        .setText(extras.getString(mActivity.EXTRA_KEY_RELEASE_DATE));
     ((TextView)rootView.findViewById(R.id.rating))
-        .setText(extras.getString("movie rate") + "/10");
+        .setText(extras.getString(mActivity.EXTRA_KEY_VOTE_AVERAGE) + "/10");
     return rootView;
   }
 }

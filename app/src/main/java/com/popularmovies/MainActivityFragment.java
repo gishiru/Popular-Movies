@@ -44,11 +44,11 @@ public class MainActivityFragment extends Fragment {
   private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
   /** Constants for Extras. */
-  private static final String EXTRA_KEY_OVERVIEW = "movie overview";
-  private static final String EXTRA_KEY_POSTER = "movie poster";
-  private static final String EXTRA_KEY_TITLE = "movie title";
-  private static final String EXTRA_KEY_RELEASE_DATE = "movie release date";
-  private static final String EXTRA_KEY_VOTE_AVERAGE = "movie rate";
+  static final String EXTRA_KEY_OVERVIEW = "movie overview";
+  static final String EXTRA_KEY_POSTER = "movie poster";
+  static final String EXTRA_KEY_TITLE = "movie title";
+  static final String EXTRA_KEY_RELEASE_DATE = "movie release date";
+  static final String EXTRA_KEY_VOTE_AVERAGE = "movie rate";
 
   private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
@@ -97,7 +97,7 @@ public class MainActivityFragment extends Fragment {
    * @param container
    * @param savedInstanceState
    * @return Root view.
-   * @// TODO: 2015/08/08  Review image view position. Why position add 2 to call getItem?
+   * @// TODO: 2015/08/08  Review image view position. Why position needs to add 2 to get correct position's item?
    */
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
