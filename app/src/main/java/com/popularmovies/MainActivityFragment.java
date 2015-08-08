@@ -81,6 +81,9 @@ public class MainActivityFragment extends Fragment {
         null, null);
   }
 
+  /**
+   * @// TODO: 2015/08/08  Should be called notifyDataSetChanged return from Settings only.
+   */
   @Override
   public void onStop() {
     super.onStop();
@@ -88,7 +91,7 @@ public class MainActivityFragment extends Fragment {
     // Clear old database.
     mPoster.clear();
     mUrls.clear();
-    mMovieAdapter.notifyDataSetChanged();  // Should be called this?
+    mMovieAdapter.notifyDataSetChanged();
   }
 
   /**
