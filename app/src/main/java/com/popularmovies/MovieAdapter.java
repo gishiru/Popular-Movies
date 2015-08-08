@@ -45,6 +45,7 @@ public class MovieAdapter extends BaseAdapter {
       imageView = (ImageView) convertView;
     }
 
+    // Load image.
     Picasso.with(mContext).load(mList.get(position)).into(imageView);
     return imageView;
   }

@@ -25,10 +25,11 @@ public class DetailActivityFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
     try {
       // Get strings.
-      JSONObject jsonObject = new JSONObject(getActivity().getIntent()
-          .getStringExtra("results"));
+      JSONObject jsonObject = new JSONObject(
+          getActivity().getIntent().getStringExtra("results"));
       ((TextView)rootView.findViewById(R.id.original_title))
           .setText(jsonObject.getString("original_title"));
       ((TextView)rootView.findViewById(R.id.release_date))

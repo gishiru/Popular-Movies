@@ -30,6 +30,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+  /** Log tag. */
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
   private JSONArray mJsonArray = null;
@@ -37,31 +38,54 @@ public class MainActivityFragment extends Fragment {
   private ArrayList<String> mUrls = null;
 
   public MainActivityFragment() {
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // Initialize
     mUrls = new ArrayList<>();
+    mMovieAdapter = new MovieAdapter(getActivity(), mUrls);
   }
 
   @Override
   public void onStart() {
     super.onStart();
-    new FetchMovieTask().execute(PreferenceManager.getDefaultSharedPreferences(getActivity())
-            .getString(getString(R.string.pref_key_sort_order), getString(R.string.pref_default_sort_order)),
+
+    // Start background task.
+    new FetchMovieTask().execute(
+        // Pass preference information to AsyncTask regarding sort order.
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+            getString(R.string.pref_key_sort_order),
+            getString(R.string.pref_default_sort_order)),
         null, null);
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+
+    // Clear old database.
+    mUrls.clear();
+    mMovieAdapter.notifyDataSetChanged();  // Should be called this?
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
-    Log.d("MainActivityFragment", "Start fragment");
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-    mMovieAdapter = new MovieAdapter(getActivity(), mUrls);
+
+    // Get a reference to grid view, set adapter and it's options.
     GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
     gridView.setAdapter(mMovieAdapter);
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Start DetailActivity.
         try {
-          startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("results",
-              mJsonArray.getJSONObject(position).toString()).putExtra("url", mUrls.get(position)));
+          startActivity(new Intent(getActivity(), DetailActivity.class)
+              .putExtra("results", mJsonArray.getJSONObject(position).toString())
+              .putExtra("url", mUrls.get(position)));
         } catch (JSONException e) {
           e.printStackTrace();
         }
@@ -71,27 +95,23 @@ public class MainActivityFragment extends Fragment {
   }
 
   /**
-   * @todo Delete API_KEY before relese.
+   * @todo Delete PARAM_API_KEY before relese.
    */
   private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
-    // Constants for building URI to call API.
+    /** Constants for building URI to call API. */
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
-    private static final String SORT_BY = "sort_by";
-    private static final String API_KEY = "api_key";
-    private static final String OWN_KEY = "73430ad81f5c1925ebcbb9d175381cab";
+    private static final String QUERY_SORT_BY = "sort_by";
+    private static final String QUERY_API_KEY = "api_key";
+    private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String REQUEST_METHOD = "GET";
 
-    // Constants for building URL to get image.
-    private static final String IMAGE_DB_SCHEME = "http";
-    private static final String IMAGE_DB_AUTHORITY = "image.tmdb.org";
-    private static final String IMAGE_DB_PLUSPATH = "t/p";
+    /** Constants for building URL to get image. */
+    private static final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w185";
 
-    @Override
-    protected void onPreExecute() {
-      super.onPreExecute();
-      mUrls.clear();
-    }
+    /** Constants for JSON data. */
+    private static final String JSON_KEY_POSTER_PATH = "poster_path";
+    private static final String JSON_KEY_RESULTS = "results";
 
     @Override
     protected ArrayList<String> doInBackground(String... sortOrder) {
@@ -99,14 +119,16 @@ public class MainActivityFragment extends Fragment {
       HttpURLConnection urlConnection = null;
 
       try {
-        // Create the request to themoviedb.org, and open the connection
-        urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL).buildUpon()
-            .appendQueryParameter(SORT_BY, sortOrder[0]).appendQueryParameter(API_KEY, OWN_KEY)
+        // Create the request to themoviedb.org, and open the connection.
+        urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL)
+            .buildUpon()
+            .appendQueryParameter(QUERY_SORT_BY, sortOrder[0])
+            .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
             .build().toString()).openConnection();
         urlConnection.setRequestMethod(REQUEST_METHOD);
         urlConnection.connect();
 
-        // Read the input stream into a String
+        // Read the input stream.
         InputStream inputStream = urlConnection.getInputStream();
         if (inputStream == null) {
           return null;
@@ -117,19 +139,21 @@ public class MainActivityFragment extends Fragment {
         while ((line = reader.readLine()) != null) {
           buffer.append(line + "\n");
         }
-
         if (buffer.length() == 0) {
           return null;
         }
 
         try {
+          // Parse JSON string received from API.
           JSONObject jsonObject = new JSONObject(buffer.toString());
-          mJsonArray = jsonObject.getJSONArray("results");
-
+          mJsonArray = jsonObject.getJSONArray(JSON_KEY_RESULTS);
           for (int i = 0; i < mJsonArray.length(); i++) {
-            mUrls.add(new Uri.Builder().scheme(IMAGE_DB_SCHEME).authority(IMAGE_DB_AUTHORITY)
-                .path(IMAGE_DB_PLUSPATH).appendPath(IMAGE_SIZE)
-                .appendEncodedPath(mJsonArray.getJSONObject(i).getString("poster_path")).build()
+            mUrls.add((new URL(
+                Uri.parse(IMAGE_DB_URL)
+                    .buildUpon()
+                    .appendPath(IMAGE_SIZE)
+                    .appendEncodedPath(mJsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
+                    .toString()))
                 .toString());
           }
           Log.d(LOG_TAG, "url = " + mUrls);
@@ -156,6 +180,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     protected void onPostExecute(ArrayList<String> strings) {
+      // Refresh adapter.
       mMovieAdapter.notifyDataSetChanged();
     }
   }
