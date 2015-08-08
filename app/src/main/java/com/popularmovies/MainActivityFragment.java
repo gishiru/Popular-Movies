@@ -91,6 +91,14 @@ public class MainActivityFragment extends Fragment {
     mMovieAdapter.notifyDataSetChanged();  // Should be called this?
   }
 
+  /**
+   *
+   * @param inflater
+   * @param container
+   * @param savedInstanceState
+   * @return Root view.
+   * @// TODO: 2015/08/08  Review image view position. Why position add 2 to call getItem?
+   */
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
@@ -126,7 +134,7 @@ public class MainActivityFragment extends Fragment {
   }
 
   /**
-   * @todo Delete PARAM_API_KEY before relese.
+   * @// TODO: 2015/08/08 Delete PARAM_API_KEY before relese.
    */
   private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
     /** Constants for building URI to call API. */
