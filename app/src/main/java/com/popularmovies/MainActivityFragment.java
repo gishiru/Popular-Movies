@@ -1,7 +1,6 @@
 package com.popularmovies;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -34,6 +33,21 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
   /** Log tag. */
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+
+  /** Constants for JSON data. */
+  private static final String JSON_KEY_OVERVIEW = "overview";
+  private static final String JSON_KEY_POSTER_PATH = "poster_path";
+  private static final String JSON_KEY_TITLE = "original_title";
+  private static final String JSON_KEY_RELEASE_DATE = "release_date";
+  private static final String JSON_KEY_RESULTS = "results";
+  private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
+
+  /** Constants for Extras. */
+  private static final String EXTRA_KEY_OVERVIEW = "movie overview";
+  private static final String EXTRA_KEY_POSTER = "movie poster";
+  private static final String EXTRA_KEY_TITLE = "movie title";
+  private static final String EXTRA_KEY_RELEASE_DATE = "movie release date";
+  private static final String EXTRA_KEY_VOTE_AVERAGE = "movie rate";
 
   private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
@@ -86,9 +100,16 @@ public class MainActivityFragment extends Fragment {
         try {
           // Put extras.
           Bundle bundle = new Bundle();
-          bundle.putString("results", mJsonArray.getJSONObject(position).toString());
-          bundle.putParcelable("movie poster",
+          bundle.putString(EXTRA_KEY_OVERVIEW,
+              mJsonArray.getJSONObject(position).getString(JSON_KEY_OVERVIEW));
+          bundle.putParcelable(EXTRA_KEY_POSTER,
               ((BitmapDrawable) mMovieAdapter.getItem(position).getDrawable()).getBitmap());
+          bundle.putString(EXTRA_KEY_TITLE,
+              mJsonArray.getJSONObject(position).getString(JSON_KEY_TITLE));
+          bundle.putString(EXTRA_KEY_RELEASE_DATE,
+              mJsonArray.getJSONObject(position).getString(JSON_KEY_RELEASE_DATE));
+          bundle.putString(EXTRA_KEY_VOTE_AVERAGE,
+              mJsonArray.getJSONObject(position).getString(JSON_KEY_VOTE_AVERAGE));
 
           // Start DetailActivity.
           startActivity(new Intent(getActivity(), DetailActivity.class).putExtras(bundle));
@@ -114,10 +135,6 @@ public class MainActivityFragment extends Fragment {
     /** Constants for building URL to get image. */
     private static final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w185";
-
-    /** Constants for JSON data. */
-    private static final String JSON_KEY_POSTER_PATH = "poster_path";
-    private static final String JSON_KEY_RESULTS = "results";
 
     @Override
     protected ArrayList<String> doInBackground(String... sortOrder) {

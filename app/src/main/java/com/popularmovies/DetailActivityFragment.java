@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -27,23 +24,14 @@ public class DetailActivityFragment extends Fragment {
 
     // Get extras.
     Bundle extras = getActivity().getIntent().getExtras();
+    ((TextView)rootView.findViewById(R.id.overview)).setText(extras.getString("movie overview"));
     ((ImageView) rootView.findViewById(R.id.thumbnail))
         .setImageBitmap((Bitmap) extras.getParcelable("movie poster"));
-    try {
-      // Get strings.
-      JSONObject jsonObject = new JSONObject(
-          getActivity().getIntent().getStringExtra("results"));
-      ((TextView)rootView.findViewById(R.id.original_title))
-          .setText(jsonObject.getString("original_title"));
-      ((TextView)rootView.findViewById(R.id.release_date))
-          .setText(jsonObject.getString("release_date"));
-      ((TextView)rootView.findViewById(R.id.rating))
-          .setText(jsonObject.getString("vote_average") + "/10");
-      ((TextView)rootView.findViewById(R.id.overview))
-          .setText(jsonObject.getString("overview"));
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
+    ((TextView)rootView.findViewById(R.id.original_title)).setText(extras.getString("movie title"));
+    ((TextView)rootView.findViewById(R.id.release_date))
+        .setText(extras.getString("movie release date"));
+    ((TextView)rootView.findViewById(R.id.rating))
+        .setText(extras.getString("movie rate") + "/10");
     return rootView;
   }
 }
