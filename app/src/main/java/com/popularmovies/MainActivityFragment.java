@@ -107,31 +107,16 @@ public class MainActivityFragment extends Fragment {
     gridView.setAdapter(mMovieAdapter);
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        try {
-          // Put extras.
-          Bundle bundle = new Bundle();
-          bundle.putString(EXTRA_KEY_OVERVIEW,
-              mJsonArray.getJSONObject(position).getString(JSON_KEY_OVERVIEW));
-          bundle.putParcelable(EXTRA_KEY_POSTER, null);
-          bundle.putString(EXTRA_KEY_TITLE,
-              mJsonArray.getJSONObject(position).getString(JSON_KEY_TITLE));
-          bundle.putString(EXTRA_KEY_RELEASE_DATE,
-              mJsonArray.getJSONObject(position).getString(JSON_KEY_RELEASE_DATE));
-          bundle.putString(EXTRA_KEY_VOTE_AVERAGE,
-              mJsonArray.getJSONObject(position).getString(JSON_KEY_VOTE_AVERAGE));
-
-          // Start DetailActivity.
-          startActivity(new Intent(getActivity(), DetailActivity.class).putExtras(bundle));
-        } catch (JSONException e) {
-          e.printStackTrace();
-        }
+        // Start DetailActivity.
+        startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("movie parcelable",
+            mMovieList.get(position)));
       }
     });
     return rootView;
   }
 
   /**
-   * @// TODO: 2015/08/08 Delete PARAM_API_KEY before relese.
+   * @// TODO: 2015/08/08 Delete PARAM_API_KEY before release.
    */
   private class FetchMovieTask extends AsyncTask<String, Void, Void> {
     /** Constants for building URI to call API. */

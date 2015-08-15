@@ -41,7 +41,12 @@ public class MovieParcelable implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
-
+    dest.writeString(overview);
+    dest.writeParcelable(poster, flags);
+    dest.writeString(releaseDate);
+    dest.writeString(title);
+    dest.writeString(voteAverage);
+    dest.writeString(url);
   }
 
   public static final Parcelable.Creator<MovieParcelable> CREATOR

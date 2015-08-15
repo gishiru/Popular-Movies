@@ -1,6 +1,5 @@
 package com.popularmovies;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,17 +24,15 @@ public class DetailActivityFragment extends Fragment {
     View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
     // Get extras.
-    Bundle extras = getActivity().getIntent().getExtras();
-    ((TextView)rootView.findViewById(R.id.overview))
-        .setText(extras.getString(mActivity.EXTRA_KEY_OVERVIEW));
-    ((ImageView) rootView.findViewById(R.id.thumbnail))
-        .setImageBitmap((Bitmap) extras.getParcelable(mActivity.EXTRA_KEY_POSTER));
-    ((TextView)rootView.findViewById(R.id.original_title))
-        .setText(extras.getString(mActivity.EXTRA_KEY_TITLE));
-    ((TextView)rootView.findViewById(R.id.release_date))
-        .setText(extras.getString(mActivity.EXTRA_KEY_RELEASE_DATE));
-    ((TextView)rootView.findViewById(R.id.rating))
-        .setText(extras.getString(mActivity.EXTRA_KEY_VOTE_AVERAGE) + "/10");
+    MovieParcelable movieParcelable = getActivity().getIntent().getParcelableExtra("movie parcelable");
+
+    // Set views.
+    ((TextView)rootView.findViewById(R.id.overview)).setText(movieParcelable.overview);
+    ((ImageView)rootView.findViewById(R.id.thumbnail)).setImageBitmap(movieParcelable.poster);
+    ((TextView)rootView.findViewById(R.id.original_title)).setText(movieParcelable.title);
+    ((TextView)rootView.findViewById(R.id.release_date)).setText(movieParcelable.releaseDate);
+    ((TextView)rootView.findViewById(R.id.rating)).setText(movieParcelable.voteAverage + "/10");
+
     return rootView;
   }
 }
