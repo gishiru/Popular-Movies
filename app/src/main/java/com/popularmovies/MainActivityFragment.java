@@ -41,14 +41,9 @@ public class MainActivityFragment extends Fragment {
   private static final String JSON_KEY_RESULTS = "results";
   private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
-  /** Constants for Extras. */
-  static final String EXTRA_KEY_OVERVIEW = "movie overview";
-  static final String EXTRA_KEY_POSTER = "movie poster";
-  static final String EXTRA_KEY_TITLE = "movie title";
-  static final String EXTRA_KEY_RELEASE_DATE = "movie release date";
-  static final String EXTRA_KEY_VOTE_AVERAGE = "movie rate";
+  /** Constant for Extra. */
+  static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
 
-  private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<MovieParcelable> mMovieList = null;
 
@@ -108,8 +103,8 @@ public class MainActivityFragment extends Fragment {
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Start DetailActivity.
-        startActivity(new Intent(getActivity(), DetailActivity.class).putExtra("movie parcelable",
-            mMovieList.get(position)));
+        startActivity(new Intent(getActivity(), DetailActivity.class)
+            .putExtra(EXTRA_KEY_MOVIE_DATA, mMovieList.get(position)));
       }
     });
     return rootView;
@@ -129,6 +124,8 @@ public class MainActivityFragment extends Fragment {
     /** Constants for building URL to get image. */
     private static final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w185";
+
+    private JSONArray jsonArray = null;
 
     @Override
     protected Void doInBackground(String... sortOrder) {
@@ -163,20 +160,20 @@ public class MainActivityFragment extends Fragment {
         try {
           // Parse JSON string received from API.
           JSONObject jsonObject = new JSONObject(buffer.toString());
-          mJsonArray = jsonObject.getJSONArray(JSON_KEY_RESULTS);
-          for (int i = 0; i < mJsonArray.length(); i++) {
+          jsonArray = jsonObject.getJSONArray(JSON_KEY_RESULTS);
+          for (int i = 0; i < jsonArray.length(); i++) {
             mMovieList.add(i, new MovieParcelable(
-                mJsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
+                jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
                 null,
-                mJsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
-                mJsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
-                mJsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE),
+                jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
+                jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
+                jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE),
                 (new URL(
                     Uri.parse(IMAGE_DB_URL)
                         .buildUpon()
                         .appendPath(IMAGE_SIZE)
                         .appendEncodedPath(
-                            mJsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
+                            jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
                         .toString()))
                     .toString()
             ));

@@ -24,7 +24,8 @@ public class DetailActivityFragment extends Fragment {
     View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
     // Get extras.
-    MovieParcelable movieParcelable = getActivity().getIntent().getParcelableExtra("movie parcelable");
+    MovieParcelable movieParcelable = getActivity().getIntent()
+        .getParcelableExtra(mActivity.EXTRA_KEY_MOVIE_DATA);
 
     // Set views.
     ((TextView)rootView.findViewById(R.id.overview)).setText(movieParcelable.overview);
