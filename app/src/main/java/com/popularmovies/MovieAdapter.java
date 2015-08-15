@@ -2,7 +2,6 @@ package com.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,6 +25,8 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
 
   public MovieAdapter(Activity c, List<MovieParcelable> movieParcelables) {
     super(c, 0, movieParcelables);
+
+    mContext = c;
   }
 
   // create a new ImageView for each item referenced by the Adapter
@@ -43,7 +44,7 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
 
     // Load image and store it to data set.
     Picasso.with(mContext).load(movieParcelable.url).into(imageView);
-    movieParcelable.poster = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+//    movieParcelable.poster = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
     return imageView;
   }
 }

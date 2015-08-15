@@ -51,6 +51,7 @@ public class MainActivityFragment extends Fragment {
 
   private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
+  private ArrayList<MovieParcelable> mMovies = null;
   private ArrayList<ImageView> mPoster = null;
   private ArrayList<String> mUrls = null;
 
@@ -62,9 +63,10 @@ public class MainActivityFragment extends Fragment {
     super.onCreate(savedInstanceState);
 
     // Initialize
+    mMovies = new ArrayList<>();
     mPoster = new ArrayList<>();
     mUrls = new ArrayList<>();
-    mMovieAdapter = new MovieAdapter(getActivity(), null);
+    mMovieAdapter = new MovieAdapter(getActivity(), mMovies);
   }
 
   @Override
@@ -88,6 +90,7 @@ public class MainActivityFragment extends Fragment {
     super.onStop();
 
     // Clear old database.
+    mMovies.clear();
     mPoster.clear();
     mUrls.clear();
     mMovieAdapter.notifyDataSetChanged();
@@ -191,8 +194,16 @@ public class MainActivityFragment extends Fragment {
                     .appendEncodedPath(mJsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
                     .toString()))
                 .toString());
+            mMovies.add(i, new MovieParcelable(
+                mJsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
+                null,
+                mJsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
+                mJsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
+                mJsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE),
+                mUrls.get(i)
+                ));
+            Log.d(LOG_TAG, "url = " + mMovies.get(i).url);
           }
-          Log.d(LOG_TAG, "url = " + mUrls);
         } catch (JSONException e) {
           e.printStackTrace();
         }
