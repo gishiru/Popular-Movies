@@ -10,27 +10,27 @@ import android.os.Parcelable;
 public class MovieParcelable implements Parcelable {
   String overview = "";
   Bitmap poster = null;
-  String title = "";
   String releaseDate = "";
-  String rate = "";
+  String title = "";
+  String voteAverage = "";
   String url = "";
 
   public MovieParcelable(String overview, Bitmap poster, String title, String releaseDate,
-                         String rate, String url) {
+                         String voteAverage, String url) {
     this.overview = overview;
     this.poster = poster;
-    this.title = title;
     this.releaseDate = releaseDate;
-    this.rate = rate;
+    this.title = title;
+    this.voteAverage = voteAverage;
     this.url = url;
   }
 
   public MovieParcelable(Parcel in) {
     overview = in.readString();
     poster = in.readParcelable(Bitmap.class.getClassLoader());
-    title = in.readString();
     releaseDate = in.readString();
-    rate = in.readString();
+    title = in.readString();
+    voteAverage = in.readString();
     url = in.readString();
   }
 

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +19,6 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
   private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
   private Context mContext = null;
-  private ArrayList<ImageView> mImageView = null;
-  private ArrayList<String> mList = null;
 
   public MovieAdapter(Activity c, List<MovieParcelable> movieParcelables) {
     super(c, 0, movieParcelables);

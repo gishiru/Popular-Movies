@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,9 +50,7 @@ public class MainActivityFragment extends Fragment {
 
   private JSONArray mJsonArray = null;
   private MovieAdapter mMovieAdapter = null;
-  private ArrayList<MovieParcelable> mMovies = null;
-  private ArrayList<ImageView> mPoster = null;
-  private ArrayList<String> mUrls = null;
+  private ArrayList<MovieParcelable> mMovieList = null;
 
   public MainActivityFragment() {
   }
@@ -63,10 +60,8 @@ public class MainActivityFragment extends Fragment {
     super.onCreate(savedInstanceState);
 
     // Initialize
-    mMovies = new ArrayList<>();
-    mPoster = new ArrayList<>();
-    mUrls = new ArrayList<>();
-    mMovieAdapter = new MovieAdapter(getActivity(), mMovies);
+    mMovieList = new ArrayList<>();
+    mMovieAdapter = new MovieAdapter(getActivity(), mMovieList);
   }
 
   @Override
@@ -90,9 +85,7 @@ public class MainActivityFragment extends Fragment {
     super.onStop();
 
     // Clear old database.
-    mMovies.clear();
-    mPoster.clear();
-    mUrls.clear();
+    mMovieList.clear();
     mMovieAdapter.notifyDataSetChanged();
   }
 
@@ -140,7 +133,7 @@ public class MainActivityFragment extends Fragment {
   /**
    * @// TODO: 2015/08/08 Delete PARAM_API_KEY before relese.
    */
-  private class FetchMovieTask extends AsyncTask<String, Void, ArrayList<String>> {
+  private class FetchMovieTask extends AsyncTask<String, Void, Void> {
     /** Constants for building URI to call API. */
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String QUERY_SORT_BY = "sort_by";
@@ -153,7 +146,7 @@ public class MainActivityFragment extends Fragment {
     private static final String IMAGE_SIZE = "w185";
 
     @Override
-    protected ArrayList<String> doInBackground(String... sortOrder) {
+    protected Void doInBackground(String... sortOrder) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
@@ -187,22 +180,22 @@ public class MainActivityFragment extends Fragment {
           JSONObject jsonObject = new JSONObject(buffer.toString());
           mJsonArray = jsonObject.getJSONArray(JSON_KEY_RESULTS);
           for (int i = 0; i < mJsonArray.length(); i++) {
-            mUrls.add((new URL(
-                Uri.parse(IMAGE_DB_URL)
-                    .buildUpon()
-                    .appendPath(IMAGE_SIZE)
-                    .appendEncodedPath(mJsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
-                    .toString()))
-                .toString());
-            mMovies.add(i, new MovieParcelable(
+            mMovieList.add(i, new MovieParcelable(
                 mJsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
                 null,
                 mJsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
                 mJsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
                 mJsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE),
-                mUrls.get(i)
-                ));
-            Log.d(LOG_TAG, "url = " + mMovies.get(i).url);
+                (new URL(
+                    Uri.parse(IMAGE_DB_URL)
+                        .buildUpon()
+                        .appendPath(IMAGE_SIZE)
+                        .appendEncodedPath(
+                            mJsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
+                        .toString()))
+                    .toString()
+            ));
+            Log.d(LOG_TAG, "url = " + mMovieList.get(i).url);
           }
         } catch (JSONException e) {
           e.printStackTrace();
@@ -222,11 +215,13 @@ public class MainActivityFragment extends Fragment {
           }
         }
       }
-      return mUrls;
+
+      return null;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> strings) {
+    protected void onPostExecute(Void result) {
+      Log.d(LOG_TAG, "Finished background process");
       // Refresh adapter.
       mMovieAdapter.notifyDataSetChanged();
     }
