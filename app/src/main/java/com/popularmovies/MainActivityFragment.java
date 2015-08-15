@@ -1,7 +1,6 @@
 package com.popularmovies;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -65,7 +64,7 @@ public class MainActivityFragment extends Fragment {
     // Initialize
     mPoster = new ArrayList<>();
     mUrls = new ArrayList<>();
-    mMovieAdapter = new MovieAdapter(getActivity(), mPoster, mUrls);
+    mMovieAdapter = new MovieAdapter(getActivity(), null);
   }
 
   @Override
@@ -117,8 +116,7 @@ public class MainActivityFragment extends Fragment {
           Bundle bundle = new Bundle();
           bundle.putString(EXTRA_KEY_OVERVIEW,
               mJsonArray.getJSONObject(position).getString(JSON_KEY_OVERVIEW));
-          bundle.putParcelable(EXTRA_KEY_POSTER,
-              ((BitmapDrawable) mMovieAdapter.getItem(position + 2).getDrawable()).getBitmap());
+          bundle.putParcelable(EXTRA_KEY_POSTER, null);
           bundle.putString(EXTRA_KEY_TITLE,
               mJsonArray.getJSONObject(position).getString(JSON_KEY_TITLE));
           bundle.putString(EXTRA_KEY_RELEASE_DATE,

@@ -1,19 +1,22 @@
 package com.popularmovies;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gishiru on 2015/07/31.
  */
-public class MovieAdapter extends BaseAdapter {
+public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
   /** Log tag. */
   private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
@@ -21,38 +24,26 @@ public class MovieAdapter extends BaseAdapter {
   private ArrayList<ImageView> mImageView = null;
   private ArrayList<String> mList = null;
 
-  public MovieAdapter(Context c, ArrayList<ImageView> imageViews, ArrayList<String> list) {
-    mContext = c;
-    mImageView = imageViews;
-    mList = list;
-  }
-
-  public int getCount() {
-    return mList.size();
-  }
-
-  public ImageView getItem(int position) {
-    return mImageView.get(position);
-  }
-
-  public long getItemId(int position) {
-    return 0;
+  public MovieAdapter(Activity c, List<MovieParcelable> movieParcelables) {
+    super(c, 0, movieParcelables);
   }
 
   // create a new ImageView for each item referenced by the Adapter
   public View getView(int position, View convertView, ViewGroup parent) {
     ImageView imageView;
+    MovieParcelable movieParcelable = getItem(position);
+
     if (convertView == null) {
       imageView = new ImageView(mContext);
       imageView.setAdjustViewBounds(true);  // Keep original aspect ratio.
       imageView.setScaleType(ImageView.ScaleType.FIT_XY);  // Handle row and column respectively.
     } else {
-      imageView = (ImageView) convertView;
+      imageView = (ImageView)convertView;
     }
 
-    // Load image.
-    Picasso.with(mContext).load(mList.get(position)).into(imageView);
-    mImageView.add(imageView);
+    // Load image and store it to data set.
+    Picasso.with(mContext).load(movieParcelable.url).into(imageView);
+    movieParcelable.poster = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
     return imageView;
   }
 }
