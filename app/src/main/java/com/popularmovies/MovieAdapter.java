@@ -2,12 +2,15 @@ package com.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -28,8 +31,8 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
 
   // create a new ImageView for each item referenced by the Adapter
   public View getView(int position, View convertView, ViewGroup parent) {
-    ImageView imageView;
-    MovieParcelable movieParcelable = getItem(position);
+    final ImageView imageView;
+    final MovieParcelable movieParcelable = getItem(position);
 
     if (convertView == null) {
       imageView = new ImageView(mContext);
@@ -39,9 +42,26 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
       imageView = (ImageView)convertView;
     }
 
-    // Load image and store it to data set.
-    Picasso.with(mContext).load(movieParcelable.url).into(imageView);
-//    movieParcelable.poster = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+    // Load image and store it to data set as bitmap.
+    Picasso.with(mContext).load(movieParcelable.url).into(
+        new Target() {
+          @Override
+          public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+          }
+
+          @Override
+          public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            movieParcelable.poster = bitmap;
+            imageView.setImageBitmap(bitmap);
+          }
+
+          @Override
+          public void onBitmapFailed(Drawable errorDrawable) {
+
+          }
+        }
+    );
     return imageView;
   }
 }

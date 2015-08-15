@@ -221,7 +221,6 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     protected void onPostExecute(Void result) {
-      Log.d(LOG_TAG, "Finished background process");
       // Refresh adapter.
       mMovieAdapter.notifyDataSetChanged();
     }
