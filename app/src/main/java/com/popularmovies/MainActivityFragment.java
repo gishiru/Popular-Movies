@@ -33,14 +33,6 @@ public class MainActivityFragment extends Fragment {
   /** Log tag. */
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-  /** Constants for JSON data. */
-  private static final String JSON_KEY_OVERVIEW = "overview";
-  private static final String JSON_KEY_POSTER_PATH = "poster_path";
-  private static final String JSON_KEY_TITLE = "original_title";
-  private static final String JSON_KEY_RELEASE_DATE = "release_date";
-  private static final String JSON_KEY_RESULTS = "results";
-  private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
-
   /** Constant for Extra. */
   static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
 
@@ -83,15 +75,7 @@ public class MainActivityFragment extends Fragment {
     mMovieList.clear();
     mMovieAdapter.notifyDataSetChanged();
   }
-
-  /**
-   *
-   * @param inflater
-   * @param container
-   * @param savedInstanceState
-   * @return Root view.
-   * @// TODO: 2015/08/08  Review image view position. Why position needs to add 2 to get correct position's item?
-   */
+  
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
@@ -124,6 +108,14 @@ public class MainActivityFragment extends Fragment {
     /** Constants for building URL to get image. */
     private static final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
     private static final String IMAGE_SIZE = "w185";
+
+    /** Constants for JSON data. */
+    private static final String JSON_KEY_OVERVIEW = "overview";
+    private static final String JSON_KEY_POSTER_PATH = "poster_path";
+    private static final String JSON_KEY_TITLE = "original_title";
+    private static final String JSON_KEY_RELEASE_DATE = "release_date";
+    private static final String JSON_KEY_RESULTS = "results";
+    private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     private JSONArray jsonArray = null;
 
@@ -158,9 +150,8 @@ public class MainActivityFragment extends Fragment {
         }
 
         try {
-          // Parse JSON string received from API.
-          JSONObject jsonObject = new JSONObject(buffer.toString());
-          jsonArray = jsonObject.getJSONArray(JSON_KEY_RESULTS);
+          // Parse JSON string received from API and store it to data set.
+          jsonArray = new JSONObject(buffer.toString()).getJSONArray(JSON_KEY_RESULTS);
           for (int i = 0; i < jsonArray.length(); i++) {
             mMovieList.add(i, new MovieParcelable(
                 jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
