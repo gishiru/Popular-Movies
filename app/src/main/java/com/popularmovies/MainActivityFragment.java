@@ -57,19 +57,6 @@ public class MainActivityFragment extends Fragment {
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
-
-    // Start background task.
-    new FetchMovieTask().execute(
-        // Pass preference information to AsyncTask regarding sort order.
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
-            getString(R.string.pref_key_sort_order),
-            getString(R.string.pref_default_sort_order)),
-        null, null);
-  }
-  
-  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -88,9 +75,23 @@ public class MainActivityFragment extends Fragment {
     // Get saved instances.
     if((savedInstanceState != null) && ((savedInstanceState.containsKey(BUNDLE_KEY_GRID_INDEX)))) {
       mIndex = savedInstanceState.getInt(BUNDLE_KEY_GRID_INDEX);
+      Log.d(LOG_TAG, "saved index = " + mIndex);
     }
 
     return rootView;
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+
+    // Start background task.
+    new FetchMovieTask().execute(
+        // Pass preference information to AsyncTask regarding sort order.
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+            getString(R.string.pref_key_sort_order),
+            getString(R.string.pref_default_sort_order)),
+        null, null);
   }
 
   @Override
@@ -102,14 +103,12 @@ public class MainActivityFragment extends Fragment {
     Log.d(LOG_TAG, "index = " + index);
   }
 
-  /**
-   * @// TODO: 2015/08/08  Should be called notifyDataSetChanged return from Settings only.
-   */
   @Override
   public void onStop() {
     super.onStop();
 
     // Clear old database.
+    mIndex = 0;
     mMovieList.clear();
     mMovieAdapter.notifyDataSetChanged();
   }
@@ -226,7 +225,7 @@ public class MainActivityFragment extends Fragment {
         @Override
         public void run() {
           mGridView.setSelection(mIndex);
-          Log.d(LOG_TAG, "saved index = " + mIndex);
+          Log.d(LOG_TAG, "restored index = " + mIndex);
         }
       });
     }
