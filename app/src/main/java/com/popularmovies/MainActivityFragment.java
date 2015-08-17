@@ -36,6 +36,11 @@ public class MainActivityFragment extends Fragment {
   /** Constant for Extra. */
   static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
 
+  /** Constant for saved instance. */
+  private static final String BUNDLE_KEY_GRID_INDEX = "index";
+
+  private GridView mGridView = null;
+  private int mIndex = 0;
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<MovieParcelable> mMovieList = null;
 
@@ -63,6 +68,37 @@ public class MainActivityFragment extends Fragment {
             getString(R.string.pref_default_sort_order)),
         null, null);
   }
+  
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+    // Get a reference to grid view, set adapter and it's options.
+    mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
+    mGridView.setAdapter(mMovieAdapter);
+    mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // Start DetailActivity.
+        startActivity(new Intent(getActivity(), DetailActivity.class)
+            .putExtra(EXTRA_KEY_MOVIE_DATA, mMovieList.get(position)));
+      }
+    });
+
+    // Get saved instances.
+    if((savedInstanceState != null) && ((savedInstanceState.containsKey(BUNDLE_KEY_GRID_INDEX)))) {
+      mIndex = savedInstanceState.getInt(BUNDLE_KEY_GRID_INDEX);
+    }
+
+    return rootView;
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+
+    outState.putInt(BUNDLE_KEY_GRID_INDEX, mGridView.getFirstVisiblePosition());
+  }
 
   /**
    * @// TODO: 2015/08/08  Should be called notifyDataSetChanged return from Settings only.
@@ -74,24 +110,6 @@ public class MainActivityFragment extends Fragment {
     // Clear old database.
     mMovieList.clear();
     mMovieAdapter.notifyDataSetChanged();
-  }
-  
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-    // Get a reference to grid view, set adapter and it's options.
-    GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
-    gridView.setAdapter(mMovieAdapter);
-    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Start DetailActivity.
-        startActivity(new Intent(getActivity(), DetailActivity.class)
-            .putExtra(EXTRA_KEY_MOVIE_DATA, mMovieList.get(position)));
-      }
-    });
-    return rootView;
   }
 
   /**
@@ -168,7 +186,6 @@ public class MainActivityFragment extends Fragment {
                         .toString()))
                     .toString()
             ));
-            Log.d(LOG_TAG, "url = " + mMovieList.get(i).url);
           }
         } catch (JSONException e) {
           e.printStackTrace();
@@ -194,8 +211,15 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     protected void onPostExecute(Void result) {
-      // Refresh adapter.
+      // Refresh adapter and list visible position.
       mMovieAdapter.notifyDataSetChanged();
+      mGridView.post(new Runnable() {
+        @Override
+        public void run() {
+          Log.d(LOG_TAG, "saved index = " + mIndex);
+          mGridView.setSelection(mIndex);
+        }
+      });
     }
   }
 }

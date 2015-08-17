@@ -55,7 +55,6 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
     final Target target = new Target() {
       @Override
       public void onPrepareLoad(Drawable placeHolderDrawable) {
-        Log.d(LOG_TAG, "Picasso loading start");
       }
 
       @Override
