@@ -8,30 +8,35 @@ import android.os.Parcelable;
  * Created by gishiru on 2015/08/15.
  */
 public class MovieParcelable implements Parcelable {
+  /** Movie parameters */
   String overview = "";
   Bitmap poster = null;
   String releaseDate = "";
   String title = "";
-  String voteAverage = "";
   String url = "";
+  String voteAverage = "";
 
-  public MovieParcelable(String overview, Bitmap poster, String title, String releaseDate,
-                         String voteAverage, String url) {
+  public MovieParcelable(String overview, Bitmap poster, String releaseDate, String title,
+                         String url, String voteAverage) {
     this.overview = overview;
     this.poster = poster;
     this.releaseDate = releaseDate;
     this.title = title;
-    this.voteAverage = voteAverage;
     this.url = url;
+    this.voteAverage = voteAverage;
   }
 
+  /**
+   * @note The reading order of the parameters must to be the same described in writeToParcel.
+   * @param in
+   */
   public MovieParcelable(Parcel in) {
     overview = in.readString();
     poster = in.readParcelable(Bitmap.class.getClassLoader());
     releaseDate = in.readString();
     title = in.readString();
-    voteAverage = in.readString();
     url = in.readString();
+    voteAverage = in.readString();
   }
 
   @Override
@@ -45,8 +50,8 @@ public class MovieParcelable implements Parcelable {
     dest.writeParcelable(poster, flags);
     dest.writeString(releaseDate);
     dest.writeString(title);
-    dest.writeString(voteAverage);
     dest.writeString(url);
+    dest.writeString(voteAverage);
   }
 
   public static final Parcelable.Creator<MovieParcelable> CREATOR

@@ -175,9 +175,8 @@ public class MainActivityFragment extends Fragment {
             mMovieList.add(i, new MovieParcelable(
                 jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
                 null,
-                jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
                 jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
-                jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE),
+                jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
                 (new URL(
                     Uri.parse(IMAGE_DB_URL)
                         .buildUpon()
@@ -185,7 +184,8 @@ public class MainActivityFragment extends Fragment {
                         .appendEncodedPath(
                             jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
                         .toString()))
-                    .toString()
+                    .toString(),
+                jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
             ));
           }
         } catch (JSONException e) {
