@@ -97,7 +97,9 @@ public class MainActivityFragment extends Fragment {
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
 
-    outState.putInt(BUNDLE_KEY_GRID_INDEX, mGridView.getFirstVisiblePosition());
+    int index = mGridView.getFirstVisiblePosition();
+    outState.putInt(BUNDLE_KEY_GRID_INDEX, index);
+    Log.d(LOG_TAG, "index = " + index);
   }
 
   /**
@@ -209,6 +211,13 @@ public class MainActivityFragment extends Fragment {
       return null;
     }
 
+    /*
+     * @note setSelectionFromTop is better than setSelection.
+     * @note Use post() mehotd to wait for list refresh.
+     * @see <a href =
+     * "http://stackoverflow.com/questions/6942582/smoothscrolltoposition-after-notifydatasetchanged-not-working-in-android"
+     * >smoothScrollToPosition after notifyDataSetChanged</a>
+     */
     @Override
     protected void onPostExecute(Void result) {
       // Refresh adapter and list visible position.
@@ -216,8 +225,8 @@ public class MainActivityFragment extends Fragment {
       mGridView.post(new Runnable() {
         @Override
         public void run() {
-          Log.d(LOG_TAG, "saved index = " + mIndex);
           mGridView.setSelection(mIndex);
+          Log.d(LOG_TAG, "saved index = " + mIndex);
         }
       });
     }
