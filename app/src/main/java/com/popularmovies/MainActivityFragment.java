@@ -36,8 +36,9 @@ public class MainActivityFragment extends Fragment {
   /** Constant for Extra. */
   static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
 
-  /** Constant for saved instance. */
+  /** Constants for saved instances. */
   private static final String BUNDLE_KEY_GRID_INDEX = "index";
+  private static final String BUNDLE_KEY_MOVIE_LIST = "movie list";
 
   private GridView mGridView = null;
   private int mIndex = 0;
@@ -53,13 +54,23 @@ public class MainActivityFragment extends Fragment {
 
     // Initialize
     mMovieList = new ArrayList<>();
-    mMovieAdapter = new MovieAdapter(getActivity(), mMovieList);
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+    // Get saved instances.
+    if((savedInstanceState != null) && ((savedInstanceState.containsKey(BUNDLE_KEY_GRID_INDEX)) &&
+        (savedInstanceState.containsKey(BUNDLE_KEY_MOVIE_LIST)))) {
+      mIndex = savedInstanceState.getInt(BUNDLE_KEY_GRID_INDEX);
+      mMovieList = savedInstanceState.getParcelableArrayList(BUNDLE_KEY_MOVIE_LIST);
+      Log.d(LOG_TAG, "saved index = " + mIndex);
+    }
+
+    // Initialize
+    mMovieAdapter = new MovieAdapter(getActivity(), mMovieList);
 
     // Get a reference to grid view, set adapter and it's options.
     mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
@@ -71,12 +82,6 @@ public class MainActivityFragment extends Fragment {
             .putExtra(EXTRA_KEY_MOVIE_DATA, mMovieList.get(position)));
       }
     });
-
-    // Get saved instances.
-    if((savedInstanceState != null) && ((savedInstanceState.containsKey(BUNDLE_KEY_GRID_INDEX)))) {
-      mIndex = savedInstanceState.getInt(BUNDLE_KEY_GRID_INDEX);
-      Log.d(LOG_TAG, "saved index = " + mIndex);
-    }
 
     return rootView;
   }
@@ -100,6 +105,7 @@ public class MainActivityFragment extends Fragment {
 
     int index = mGridView.getFirstVisiblePosition();
     outState.putInt(BUNDLE_KEY_GRID_INDEX, index);
+    outState.putParcelableArrayList(BUNDLE_KEY_MOVIE_LIST, mMovieList);
     Log.d(LOG_TAG, "index = " + index);
   }
 
