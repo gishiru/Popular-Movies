@@ -118,7 +118,7 @@ public class MainActivityFragment extends Fragment {
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String QUERY_SORT_BY = "sort_by";
     private static final String QUERY_API_KEY = "api_key";
-    private static final String PARAM_API_KEY = "";
+    private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String REQUEST_METHOD = "GET";
 
     /** Constants for building URL to get image. */
@@ -209,7 +209,7 @@ public class MainActivityFragment extends Fragment {
 
     /*
      * @note setSelectionFromTop is better than setSelection.
-     * @note Use post() mehotd to wait for list refresh.
+     * @note Use post() method to wait for list refresh.
      * @see <a href =
      * "http://stackoverflow.com/questions/6942582/smoothscrolltoposition-after-notifydatasetchanged-not-working-in-android"
      * >smoothScrollToPosition after notifyDataSetChanged</a>
