@@ -108,16 +108,6 @@ public class MainActivityFragment extends Fragment {
     outState.putParcelableArrayList(BUNDLE_KEY_MOVIE_LIST, mMovieList);
     Log.d(LOG_TAG, "index = " + index);
   }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-
-    // Clear old database.
-    mIndex = 0;
-    mMovieList.clear();
-    mMovieAdapter.notifyDataSetChanged();
-  }
   
   private class FetchMovieTask extends AsyncTask<String, Void, Void> {
     /** Constants for building URI to call API. */
@@ -140,6 +130,14 @@ public class MainActivityFragment extends Fragment {
     private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     private JSONArray jsonArray = null;
+
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+
+      // Clear old database.
+      mMovieList.clear();
+    }
 
     @Override
     protected Void doInBackground(String... sortOrder) {
