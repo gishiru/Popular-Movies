@@ -1,6 +1,7 @@
 package com.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,7 +30,8 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment
+    implements SharedPreferences.OnSharedPreferenceChangeListener {
   /** Log tag. */
   private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
@@ -44,6 +46,7 @@ public class MainActivityFragment extends Fragment {
   private int mIndex = 0;
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<MovieParcelable> mMovieList = null;
+  private SharedPreferences mPrefs = null;
 
   public MainActivityFragment() {
   }
@@ -54,6 +57,8 @@ public class MainActivityFragment extends Fragment {
 
     // Initialize
     mMovieList = new ArrayList<>();
+    mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    mPrefs.registerOnSharedPreferenceChangeListener(this);
   }
 
   @Override
@@ -90,10 +95,10 @@ public class MainActivityFragment extends Fragment {
     super.onStart();
 
     // Start background task.
-    new FetchMovieTask().execute(
+    new FetchMovieTask()
+        .execute(
         // Pass preference information to AsyncTask regarding sort order.
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
-            getString(R.string.pref_key_sort_order),
+        mPrefs.getString(getString(R.string.pref_key_sort_order),
             getString(R.string.pref_default_sort_order)),
         null, null);
   }
@@ -108,7 +113,22 @@ public class MainActivityFragment extends Fragment {
     // Always call the superclass so it can save the view hierarchy state.
     super.onSaveInstanceState(outState);
   }
-  
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+
+    // Clear
+    mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+  }
+
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    if (key.equals(getString(R.string.pref_key_sort_order))) {
+      Log.d(LOG_TAG, "preference is changed");
+    }
+  }
+
   private class FetchMovieTask extends AsyncTask<String, Void, Void> {
     /** Constants for building URI to call API. */
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
