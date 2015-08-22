@@ -1,7 +1,10 @@
 package com.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,17 +98,23 @@ public class MainActivityFragment extends Fragment
   public void onStart() {
     super.onStart();
 
-
     if (mMovieList.size() == 0) {
-      // Start background task.
-      new FetchMovieTask()
-          .execute(
-              // Pass preference information to AsyncTask regarding sort order.
-              mPrefs.getString(getString(R.string.pref_key_sort_order),
-                  getString(R.string.pref_default_sort_order)),
-              null, null);
+      // Check network connection before fetch data.
+      NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
+          .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+      if ((networkInfo != null) && networkInfo.isConnected()) {
+        // Start background task.
+        new FetchMovieTask()
+            .execute(
+                // Pass preference information to AsyncTask regarding sort order.
+                mPrefs.getString(getString(R.string.pref_key_sort_order),
+                    getString(R.string.pref_default_sort_order)),
+                null, null);
 
-      Log.d(LOG_TAG, "fetch data");
+        Log.d(LOG_TAG, "fetch data");
+      } else {
+        Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
+      }
     }
   }
 

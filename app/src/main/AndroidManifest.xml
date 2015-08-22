@@ -4,6 +4,7 @@
 
     <!-- Must to be added this permission if we want to connect to the Internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
