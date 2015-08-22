@@ -94,13 +94,18 @@ public class MainActivityFragment extends Fragment
   public void onStart() {
     super.onStart();
 
-    // Start background task.
-    new FetchMovieTask()
-        .execute(
-        // Pass preference information to AsyncTask regarding sort order.
-        mPrefs.getString(getString(R.string.pref_key_sort_order),
-            getString(R.string.pref_default_sort_order)),
-        null, null);
+
+    if (mMovieList.size() == 0) {
+      // Start background task.
+      new FetchMovieTask()
+          .execute(
+              // Pass preference information to AsyncTask regarding sort order.
+              mPrefs.getString(getString(R.string.pref_key_sort_order),
+                  getString(R.string.pref_default_sort_order)),
+              null, null);
+
+      Log.d(LOG_TAG, "fetch data");
+    }
   }
 
   @Override
@@ -125,6 +130,10 @@ public class MainActivityFragment extends Fragment
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     if (key.equals(getString(R.string.pref_key_sort_order))) {
+      // Clear old database info.
+      mIndex = 0;
+      mMovieList.clear();
+
       Log.d(LOG_TAG, "preference is changed");
     }
   }
@@ -150,14 +159,6 @@ public class MainActivityFragment extends Fragment
     private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     private JSONArray jsonArray = null;
-
-    @Override
-    protected void onPreExecute() {
-      super.onPreExecute();
-
-      // Clear old database.
-      mMovieList.clear();
-    }
 
     @Override
     protected Void doInBackground(String... sortOrder) {
