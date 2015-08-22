@@ -62,8 +62,7 @@ public class MainActivityFragment extends Fragment {
     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
     // Get saved instances.
-    if((savedInstanceState != null) && ((savedInstanceState.containsKey(BUNDLE_KEY_GRID_INDEX)) &&
-        (savedInstanceState.containsKey(BUNDLE_KEY_MOVIE_LIST)))) {
+    if(savedInstanceState != null) {
       mIndex = savedInstanceState.getInt(BUNDLE_KEY_GRID_INDEX);
       mMovieList = savedInstanceState.getParcelableArrayList(BUNDLE_KEY_MOVIE_LIST);
       Log.d(LOG_TAG, "saved index = " + mIndex);
@@ -101,12 +100,13 @@ public class MainActivityFragment extends Fragment {
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-
     int index = mGridView.getFirstVisiblePosition();
     outState.putInt(BUNDLE_KEY_GRID_INDEX, index);
     outState.putParcelableArrayList(BUNDLE_KEY_MOVIE_LIST, mMovieList);
     Log.d(LOG_TAG, "index = " + index);
+
+    // Always call the superclass so it can save the view hierarchy state.
+    super.onSaveInstanceState(outState);
   }
   
   private class FetchMovieTask extends AsyncTask<String, Void, Void> {
