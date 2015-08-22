@@ -48,6 +48,7 @@ public class MainActivityFragment extends Fragment
 
   private GridView mGridView = null;
   private int mIndex = 0;
+  private boolean mIsPreferenceChanged = false;
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<MovieParcelable> mMovieList = null;
   private SharedPreferences mPrefs = null;
@@ -98,7 +99,7 @@ public class MainActivityFragment extends Fragment
   public void onStart() {
     super.onStart();
 
-    if (mMovieList.size() == 0) {
+    if ((mMovieList.size() == 0) || mIsPreferenceChanged) {
       // Check network connection before fetch data.
       NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
           .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
@@ -140,9 +141,7 @@ public class MainActivityFragment extends Fragment
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     if (key.equals(getString(R.string.pref_key_sort_order))) {
-      // Clear old database info.
-      mIndex = 0;
-      mMovieList.clear();
+      mIsPreferenceChanged = true;
 
       Log.d(LOG_TAG, "preference is changed");
     }
@@ -169,6 +168,15 @@ public class MainActivityFragment extends Fragment
     private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     private JSONArray jsonArray = null;
+
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+
+      // Clear old database info.
+      mIndex = 0;
+      mMovieList.clear();
+    }
 
     @Override
     protected Void doInBackground(String... sortOrder) {
@@ -252,6 +260,7 @@ public class MainActivityFragment extends Fragment
     @Override
     protected void onPostExecute(Void result) {
       // Refresh adapter and list visible position.
+      mIsPreferenceChanged = false;
       mMovieAdapter.notifyDataSetChanged();
       mGridView.post(new Runnable() {
         @Override
