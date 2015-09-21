@@ -34,10 +34,10 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment
+public class MovieFragment extends Fragment
     implements SharedPreferences.OnSharedPreferenceChangeListener {
   /** Log tag. */
-  private static final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+  private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
   /** Constant for Extra. */
   static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
@@ -53,7 +53,7 @@ public class MainActivityFragment extends Fragment
   private ArrayList<MovieParcelable> mMovieList = null;
   private SharedPreferences mPrefs = null;
 
-  public MainActivityFragment() {
+  public MovieFragment() {
   }
 
   @Override

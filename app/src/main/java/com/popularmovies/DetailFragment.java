@@ -11,11 +11,11 @@ import android.widget.TextView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
-  private MainActivityFragment mActivity = null;
+public class DetailFragment extends Fragment {
+  private MovieFragment mActivity = null;
 
-  public DetailActivityFragment() {
-    mActivity = new MainActivityFragment();
+  public DetailFragment() {
+    mActivity = new MovieFragment();
   }
 
   @Override
