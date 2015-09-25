@@ -1,5 +1,6 @@
 package com.popularmovies;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,5 +36,12 @@ public class DetailFragment extends Fragment {
     ((TextView)rootView.findViewById(R.id.vote_average)).setText(movieParcelable.voteAverage + "/10");
 
     return rootView;
+  }
+
+  private class FetchMovieDetailTask extends AsyncTask<String, Void, Void> {
+    @Override
+    protected Void doInBackground(String... params) {
+      return null;
+    }
   }
 }
