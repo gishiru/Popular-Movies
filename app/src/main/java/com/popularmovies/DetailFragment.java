@@ -32,7 +32,7 @@ public class DetailFragment extends Fragment {
     ((ImageView)rootView.findViewById(R.id.thumbnail)).setImageBitmap(movieParcelable.poster);
     ((TextView)rootView.findViewById(R.id.original_title)).setText(movieParcelable.title);
     ((TextView)rootView.findViewById(R.id.release_date)).setText(movieParcelable.releaseDate);
-    ((TextView)rootView.findViewById(R.id.rating)).setText(movieParcelable.voteAverage + "/10");
+    ((TextView)rootView.findViewById(R.id.vote_average)).setText(movieParcelable.voteAverage + "/10");
 
     return rootView;
   }
