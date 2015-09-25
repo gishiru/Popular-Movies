@@ -167,8 +167,6 @@ public class MovieFragment extends Fragment
     private static final String JSON_KEY_RESULTS = "results";
     private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
-    private JSONArray jsonArray = null;
-
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
@@ -210,7 +208,7 @@ public class MovieFragment extends Fragment
 
         try {
           // Parse JSON string received from API and store it to data set.
-          jsonArray = new JSONObject(buffer.toString()).getJSONArray(JSON_KEY_RESULTS);
+          JSONArray jsonArray = new JSONObject(buffer.toString()).getJSONArray(JSON_KEY_RESULTS);
           for (int i = 0; i < jsonArray.length(); i++) {
             mMovieList.add(i, new MovieParcelable(
                 jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
