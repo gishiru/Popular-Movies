@@ -36,15 +36,15 @@ import java.util.ArrayList;
  */
 public class MovieFragment extends Fragment
     implements SharedPreferences.OnSharedPreferenceChangeListener {
-  /** Log tag. */
-  private static final String LOG_TAG = MovieFragment.class.getSimpleName();
+  /** Constants for saved instances. */
+  private static final String BUNDLE_KEY_GRID_INDEX = "index";
+  private static final String BUNDLE_KEY_MOVIE_LIST = "movie list";
 
   /** Constant for Extra. */
   static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
 
-  /** Constants for saved instances. */
-  private static final String BUNDLE_KEY_GRID_INDEX = "index";
-  private static final String BUNDLE_KEY_MOVIE_LIST = "movie list";
+  /** Log tag. */
+  private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
   private GridView mGridView = null;
   private int mIndex = 0;
@@ -150,9 +150,9 @@ public class MovieFragment extends Fragment
   private class FetchMovieTask extends AsyncTask<String, Void, Void> {
     /** Constants for building URI to call API. */
     private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
+    private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String QUERY_SORT_BY = "sort_by";
     private static final String QUERY_API_KEY = "api_key";
-    private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String REQUEST_METHOD = "GET";
 
     @Override
@@ -247,9 +247,9 @@ public class MovieFragment extends Fragment
     /** Constants for JSON data. */
     final String JSON_KEY_OVERVIEW = "overview";
     final String JSON_KEY_POSTER_PATH = "poster_path";
-    final String JSON_KEY_TITLE = "original_title";
     final String JSON_KEY_RELEASE_DATE = "release_date";
     final String JSON_KEY_RESULTS = "results";
+    final String JSON_KEY_TITLE = "original_title";
     final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     // Parse JSON string received from API and store it to data set.
