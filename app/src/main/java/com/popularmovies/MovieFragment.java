@@ -155,18 +155,6 @@ public class MovieFragment extends Fragment
     private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String REQUEST_METHOD = "GET";
 
-    /** Constants for building URL to get image. */
-    private static final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
-    private static final String IMAGE_SIZE = "w185";
-
-    /** Constants for JSON data. */
-    private static final String JSON_KEY_OVERVIEW = "overview";
-    private static final String JSON_KEY_POSTER_PATH = "poster_path";
-    private static final String JSON_KEY_TITLE = "original_title";
-    private static final String JSON_KEY_RELEASE_DATE = "release_date";
-    private static final String JSON_KEY_RESULTS = "results";
-    private static final String JSON_KEY_VOTE_AVERAGE = "vote_average";
-
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
@@ -206,30 +194,11 @@ public class MovieFragment extends Fragment
           return null;
         }
 
-        try {
-          // Parse JSON string received from API and store it to data set.
-          JSONArray jsonArray = new JSONObject(buffer.toString()).getJSONArray(JSON_KEY_RESULTS);
-          for (int i = 0; i < jsonArray.length(); i++) {
-            mMovieList.add(i, new MovieParcelable(
-                jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
-                null,
-                jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
-                jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
-                (new URL(
-                    Uri.parse(IMAGE_DB_URL)
-                        .buildUpon()
-                        .appendPath(IMAGE_SIZE)
-                        .appendEncodedPath(
-                            jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
-                        .toString()))
-                    .toString(),
-                jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
-            ));
-          }
-        } catch (JSONException e) {
-          e.printStackTrace();
-        }
+        getMovieDataFromJason(buffer.toString());
       } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+      } catch (JSONException e) {
         e.printStackTrace();
         return null;
       } finally {
@@ -267,6 +236,46 @@ public class MovieFragment extends Fragment
           Log.d(LOG_TAG, "restored index = " + mIndex);
         }
       });
+    }
+  }
+
+  private void getMovieDataFromJason(String movieJsonStr) throws JSONException {
+    /** Constants for building URL to get image. */
+    final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
+    final String IMAGE_SIZE = "w185";
+
+    /** Constants for JSON data. */
+    final String JSON_KEY_OVERVIEW = "overview";
+    final String JSON_KEY_POSTER_PATH = "poster_path";
+    final String JSON_KEY_TITLE = "original_title";
+    final String JSON_KEY_RELEASE_DATE = "release_date";
+    final String JSON_KEY_RESULTS = "results";
+    final String JSON_KEY_VOTE_AVERAGE = "vote_average";
+
+    // Parse JSON string received from API and store it to data set.
+    try {
+      JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        mMovieList.add(i, new MovieParcelable(
+            jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
+            null,
+            jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
+            jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
+            (new URL(
+                Uri.parse(IMAGE_DB_URL)
+                    .buildUpon()
+                    .appendPath(IMAGE_SIZE)
+                    .appendEncodedPath(
+                        jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
+                    .toString()))
+                .toString(),
+            jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
+        ));
+      }
+    } catch (JSONException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }
