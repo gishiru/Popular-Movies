@@ -81,7 +81,7 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
           .load((new URL(
               Uri.parse(IMAGE_DB_URL).buildUpon()
                   .appendPath(IMAGE_SIZE)
-                  .appendEncodedPath(movieParcelable.url)
+                  .appendEncodedPath(movieParcelable.posterPath)
                   .toString())
           ).toString())
           .into(new WeakReference<>(target).get());

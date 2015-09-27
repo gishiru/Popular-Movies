@@ -12,19 +12,19 @@ public class MovieParcelable implements Parcelable {
   String id = "";
   String overview = "";
   Bitmap poster = null;
+  String posterPath = "";
   String releaseDate = "";
   String title = "";
-  String url = "";
   String voteAverage = "";
 
-  public MovieParcelable(String id, String overview, Bitmap poster, String releaseDate, String title,
-                         String url, String voteAverage) {
+  public MovieParcelable(String id, String overview, Bitmap poster, String posterPath,
+                         String releaseDate, String title, String voteAverage) {
     this.id = id;
     this.overview = overview;
     this.poster = poster;
+    this.posterPath = posterPath;
     this.releaseDate = releaseDate;
     this.title = title;
-    this.url = url;
     this.voteAverage = voteAverage;
   }
 
@@ -36,9 +36,9 @@ public class MovieParcelable implements Parcelable {
     id = in.readString();
     overview = in.readString();
     poster = in.readParcelable(Bitmap.class.getClassLoader());
+    posterPath = in.readString();
     releaseDate = in.readString();
     title = in.readString();
-    url = in.readString();
     voteAverage = in.readString();
   }
 
@@ -52,9 +52,9 @@ public class MovieParcelable implements Parcelable {
     dest.writeString(id);
     dest.writeString(overview);
     dest.writeParcelable(poster, flags);
+    dest.writeString(posterPath);
     dest.writeString(releaseDate);
     dest.writeString(title);
-    dest.writeString(url);
     dest.writeString(voteAverage);
   }
 

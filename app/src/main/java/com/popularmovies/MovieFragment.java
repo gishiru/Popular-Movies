@@ -258,9 +258,9 @@ public class MovieFragment extends Fragment
           jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
           jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
           null,
+          jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH),
           jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
           jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
-          jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH),
           jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
       ));
     }
