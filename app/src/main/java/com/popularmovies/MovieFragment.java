@@ -247,6 +247,7 @@ public class MovieFragment extends Fragment
     final String IMAGE_SIZE = "w185";
 
     /** Constants for JSON data. */
+    final String JSON_KEY_ID = "id";
     final String JSON_KEY_OVERVIEW = "overview";
     final String JSON_KEY_POSTER_PATH = "poster_path";
     final String JSON_KEY_RELEASE_DATE = "release_date";
@@ -259,6 +260,7 @@ public class MovieFragment extends Fragment
       JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
       for (int i = 0; i < jsonArray.length(); i++) {
         mMovieList.add(i, new MovieParcelable(
+            jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
             jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
             null,
             jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
