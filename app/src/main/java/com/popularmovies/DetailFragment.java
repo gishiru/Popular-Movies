@@ -27,6 +27,7 @@ import java.net.URL;
  */
 public class DetailFragment extends Fragment {
   private static final String MOVIE_ENDPOINT = "movie";
+  private static final String REVIEW_ENDPOINT = "reviews";
   private static final String VIDEO_ENDPOINT = "videos";
 
   private MovieFragment mActivity = null;
@@ -60,18 +61,18 @@ public class DetailFragment extends Fragment {
   public void onStart() {
     super.onStart();
 
-    new FetchMovieDetailTask().execute(buildFetchTrailerUri());
+    new FetchMovieDetailTask().execute();
   }
 
-  private class FetchMovieDetailTask extends AsyncTask<String, Void, Void> {
+  private class FetchMovieDetailTask extends AsyncTask<Void, Void, Void> {
     @Override
-    protected Void doInBackground(String... uri) {
+    protected Void doInBackground(Void... voids) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
       try {
         // Create the request to themoviedb.org, and open the connection.
-        urlConnection = (HttpURLConnection) new URL(uri[0]).openConnection();
+        urlConnection = (HttpURLConnection) new URL(buildFetchTrailerUri()).openConnection();
         urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
 
@@ -91,6 +92,38 @@ public class DetailFragment extends Fragment {
         }
 
         getTrailerDataFromJson(buffer.toString());
+
+        // Reset last connection.
+        if (urlConnection != null) {
+          urlConnection.disconnect();
+        }
+        if (reader != null) {
+          try {
+            reader.close();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+
+        // Create the request to themoviedb.org, and open the connection.
+        urlConnection = (HttpURLConnection) new URL(buildFetchReviewUri()).openConnection();
+        urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
+        urlConnection.connect();
+
+        // Read the input stream.
+        inputStream = urlConnection.getInputStream();
+        if (inputStream == null) {
+          return null;
+        }
+        buffer = new StringBuffer();
+        reader = new BufferedReader(new InputStreamReader(inputStream));
+        while ((line = reader.readLine()) != null) {
+          buffer.append(line + "\n");
+        }
+        if (buffer.length() == 0) {
+          return null;
+        }
+        Log.d(DetailFragment.class.getSimpleName(), "jstr " + buffer.toString());
       } catch (IOException e) {
         e.printStackTrace();
         return null;
@@ -112,6 +145,16 @@ public class DetailFragment extends Fragment {
 
       return null;
     }
+  }
+
+  private String  buildFetchReviewUri() {
+    return Uri.parse(MovieFragment.MOVIE_DB_URL)
+        .buildUpon()
+        .appendPath(MOVIE_ENDPOINT)
+        .appendPath(mMovieId)
+        .appendPath(REVIEW_ENDPOINT)
+        .appendQueryParameter(MovieFragment.QUERY_API_KEY, MovieFragment.PARAM_API_KEY)
+        .build().toString();
   }
 
   private String  buildFetchTrailerUri() {
