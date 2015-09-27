@@ -162,13 +162,13 @@ public class MovieFragment extends Fragment
     }
 
     @Override
-    protected Void doInBackground(String... url) {
+    protected Void doInBackground(String... uri) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
       try {
         // Create the request to themoviedb.org, and open the connection.
-        urlConnection = (HttpURLConnection) new URL(url[0]).openConnection();
+        urlConnection = (HttpURLConnection) new URL(uri[0]).openConnection();
         urlConnection.setRequestMethod(REQUEST_METHOD);
         urlConnection.connect();
 
