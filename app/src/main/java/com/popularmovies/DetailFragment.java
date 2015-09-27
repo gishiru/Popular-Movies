@@ -26,6 +26,9 @@ import java.net.URL;
  * A placeholder fragment containing a simple view.
  */
 public class DetailFragment extends Fragment {
+  private static final String MOVIE_ENDPOINT = "movie";
+  private static final String VIDEO_ENDPOINT = "videos";
+
   private MovieFragment mActivity = null;
   private String mMovieId = "";
 
@@ -57,30 +60,18 @@ public class DetailFragment extends Fragment {
   public void onStart() {
     super.onStart();
 
-    new FetchMovieDetailTask().execute(mMovieId);
+    new FetchMovieDetailTask().execute(buildFetchTrailerUri());
   }
 
   private class FetchMovieDetailTask extends AsyncTask<String, Void, Void> {
-    private static final String MOVIE_ENDPOINT = "movie";
-    private static final String VIDEO_ENDPOINT = "videos";
-
     @Override
-    protected Void doInBackground(String... movieId) {
+    protected Void doInBackground(String... uri) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
       try {
         // Create the request to themoviedb.org, and open the connection.
-        urlConnection = (HttpURLConnection) new URL(
-            Uri.parse(MovieFragment.MOVIE_DB_URL)
-                .buildUpon()
-                .appendPath(MOVIE_ENDPOINT)
-                .appendPath(movieId[0])
-                .appendPath(VIDEO_ENDPOINT)
-                .appendQueryParameter(
-                    MovieFragment.QUERY_API_KEY,
-                    MovieFragment.PARAM_API_KEY)
-                .build().toString()).openConnection();
+        urlConnection = (HttpURLConnection) new URL(uri[0]).openConnection();
         urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
 
@@ -121,6 +112,16 @@ public class DetailFragment extends Fragment {
 
       return null;
     }
+  }
+
+  private String  buildFetchTrailerUri() {
+    return Uri.parse(MovieFragment.MOVIE_DB_URL)
+        .buildUpon()
+        .appendPath(MOVIE_ENDPOINT)
+        .appendPath(mMovieId)
+        .appendPath(VIDEO_ENDPOINT)
+        .appendQueryParameter(MovieFragment.QUERY_API_KEY, MovieFragment.PARAM_API_KEY)
+        .build().toString();
   }
 
   private void getTrailerDataFromJson(String trailerJsonStr) throws JSONException {
