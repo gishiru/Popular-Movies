@@ -196,7 +196,7 @@ public class MovieFragment extends Fragment
           return null;
         }
 
-        getMovieDataFromJason(buffer.toString());
+        getMovieDataFromJson(buffer.toString());
       } catch (IOException e) {
         e.printStackTrace();
         return null;
@@ -241,7 +241,7 @@ public class MovieFragment extends Fragment
     }
   }
 
-  private void getMovieDataFromJason(String movieJsonStr) throws JSONException {
+  private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
     /** Constants for building URL to get image. */
     final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
     final String IMAGE_SIZE = "w185";
