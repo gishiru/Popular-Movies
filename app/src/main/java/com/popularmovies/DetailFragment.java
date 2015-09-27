@@ -48,12 +48,6 @@ public class DetailFragment extends Fragment {
   }
 
   private class FetchMovieDetailTask extends AsyncTask<String, Void, Void> {
-    /** Constants for building URI to call API. */
-    private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/movie";
-    private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
-    private static final String QUERY_API_KEY = "api_key";
-    private static final String REQUEST_METHOD = "GET";
-
     @Override
     protected Void doInBackground(String... params) {
       BufferedReader reader = null;
@@ -61,11 +55,14 @@ public class DetailFragment extends Fragment {
 
       try {
         // Create the request to themoviedb.org, and open the connection.
-        urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL)
-            .buildUpon()
-            .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
-            .build().toString()).openConnection();
-        urlConnection.setRequestMethod(REQUEST_METHOD);
+        urlConnection = (HttpURLConnection) new URL(
+            Uri.parse(MovieFragment.FetchMovieTask.MOVIE_DB_URL)
+                .buildUpon()
+                .appendQueryParameter(
+                    MovieFragment.FetchMovieTask.QUERY_API_KEY,
+                    MovieFragment.FetchMovieTask.PARAM_API_KEY)
+                .build().toString()).openConnection();
+        urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
 
         // Read the input stream.

@@ -147,13 +147,14 @@ public class MovieFragment extends Fragment
     }
   }
 
-  private class FetchMovieTask extends AsyncTask<String, Void, Void> {
+  class FetchMovieTask extends AsyncTask<String, Void, Void> {
     /** Constants for building URI to call API. */
-    private static final String MOVIE_DB_URL = "http://api.themoviedb.org/3/discover/movie";
-    private static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
+    static final String MOVIE_DB_URL = "http://api.themoviedb.org/3";
+    private static final String DISCOVER_ENDPOINT = "discover/movie";
+    static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
     private static final String QUERY_SORT_BY = "sort_by";
-    private static final String QUERY_API_KEY = "api_key";
-    private static final String REQUEST_METHOD = "GET";
+    static final String QUERY_API_KEY = "api_key";
+    static final String REQUEST_METHOD = "GET";
 
     @Override
     protected void onPreExecute() {
@@ -173,6 +174,7 @@ public class MovieFragment extends Fragment
         // Create the request to themoviedb.org, and open the connection.
         urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL)
             .buildUpon()
+            .appendEncodedPath(DISCOVER_ENDPOINT)
             .appendQueryParameter(QUERY_SORT_BY, sortOrder[0])
             .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
             .build().toString()).openConnection();
