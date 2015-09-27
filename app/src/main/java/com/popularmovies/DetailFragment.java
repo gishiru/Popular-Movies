@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,8 +98,11 @@ public class DetailFragment extends Fragment {
         if (buffer.length() == 0) {
           return null;
         }
-        Log.d(FetchMovieDetailTask.class.getSimpleName(), "json " + buffer);
+        getTrailerDataFromJson(buffer.toString());
       } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+      } catch (JSONException e) {
         e.printStackTrace();
         return null;
       } finally {
@@ -112,6 +119,18 @@ public class DetailFragment extends Fragment {
       }
 
       return null;
+    }
+  }
+
+  private void getTrailerDataFromJson(String trailerJsonStr) throws JSONException {
+    /** Constants for JSON data. */
+    final String JSON_KEY_KEY = "key";
+    final String JSON_KEY_RESULTS = "results";
+
+    JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
+    for (int i = 0; i < jsonArray.length(); i++) {
+      Log.d(DetailFragment.class.getSimpleName(),
+          "key " + jsonArray.getJSONObject(i).getString(JSON_KEY_KEY));
     }
   }
 }
