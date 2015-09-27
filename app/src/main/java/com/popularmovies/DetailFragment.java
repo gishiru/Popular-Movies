@@ -23,6 +23,7 @@ import java.net.URL;
  */
 public class DetailFragment extends Fragment {
   private MovieFragment mActivity = null;
+  private String mMovieId = "";
 
   public DetailFragment() {
     mActivity = new MovieFragment();
@@ -36,6 +37,7 @@ public class DetailFragment extends Fragment {
     // Get extras.
     MovieParcelable movieParcelable = getActivity().getIntent()
         .getParcelableExtra(mActivity.EXTRA_KEY_MOVIE_DATA);
+    mMovieId = movieParcelable.id;
 
     // Set views.
     ((TextView)rootView.findViewById(R.id.overview)).setText(movieParcelable.overview);
@@ -47,9 +49,19 @@ public class DetailFragment extends Fragment {
     return rootView;
   }
 
+  @Override
+  public void onStart() {
+    super.onStart();
+
+    new FetchMovieDetailTask().execute(mMovieId);
+  }
+
   private class FetchMovieDetailTask extends AsyncTask<String, Void, Void> {
+    private static final String MOVIE_ENDPOINT = "movie";
+    private static final String VIDEO_ENDPOINT = "videos";
+
     @Override
-    protected Void doInBackground(String... params) {
+    protected Void doInBackground(String... movieId) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
@@ -58,6 +70,9 @@ public class DetailFragment extends Fragment {
         urlConnection = (HttpURLConnection) new URL(
             Uri.parse(MovieFragment.FetchMovieTask.MOVIE_DB_URL)
                 .buildUpon()
+                .appendPath(MOVIE_ENDPOINT)
+                .appendPath(movieId[0])
+                .appendPath(VIDEO_ENDPOINT)
                 .appendQueryParameter(
                     MovieFragment.FetchMovieTask.QUERY_API_KEY,
                     MovieFragment.FetchMovieTask.PARAM_API_KEY)
