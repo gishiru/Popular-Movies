@@ -112,20 +112,7 @@ public class MovieFragment extends Fragment
           .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
       if ((networkInfo != null) && networkInfo.isConnected()) {
         // Start background task.
-        new FetchMovieTask()
-            .execute(
-                Uri.parse(MOVIE_DB_URL)
-                    .buildUpon()
-                    .appendEncodedPath(DISCOVER_ENDPOINT)
-                    .appendQueryParameter(
-                        QUERY_SORT_BY,
-                        // Pass preference information to AsyncTask regarding sort order.
-                        mPrefs.getString(
-                            getString(R.string.pref_key_sort_order),
-                            getString(R.string.pref_default_sort_order)))
-                    .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
-                    .build().toString(),
-                null, null);
+        new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
 
         Log.d(LOG_TAG, "fetch data");
       } else {
@@ -243,6 +230,20 @@ public class MovieFragment extends Fragment
         }
       });
     }
+  }
+
+  private String buildFetchMovieUri() {
+    return Uri.parse(MOVIE_DB_URL)
+        .buildUpon()
+        .appendEncodedPath(DISCOVER_ENDPOINT)
+        .appendQueryParameter(
+            QUERY_SORT_BY,
+            // Pass preference information to AsyncTask regarding sort order.
+            mPrefs.getString(
+                getString(R.string.pref_key_sort_order),
+                getString(R.string.pref_default_sort_order)))
+        .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
+        .build().toString();
   }
 
   private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
