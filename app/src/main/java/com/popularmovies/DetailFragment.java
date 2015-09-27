@@ -72,14 +72,14 @@ public class DetailFragment extends Fragment {
       try {
         // Create the request to themoviedb.org, and open the connection.
         urlConnection = (HttpURLConnection) new URL(
-            Uri.parse(MovieFragment.FetchMovieTask.MOVIE_DB_URL)
+            Uri.parse(MovieFragment.MOVIE_DB_URL)
                 .buildUpon()
                 .appendPath(MOVIE_ENDPOINT)
                 .appendPath(movieId[0])
                 .appendPath(VIDEO_ENDPOINT)
                 .appendQueryParameter(
-                    MovieFragment.FetchMovieTask.QUERY_API_KEY,
-                    MovieFragment.FetchMovieTask.PARAM_API_KEY)
+                    MovieFragment.QUERY_API_KEY,
+                    MovieFragment.PARAM_API_KEY)
                 .build().toString()).openConnection();
         urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
@@ -98,6 +98,7 @@ public class DetailFragment extends Fragment {
         if (buffer.length() == 0) {
           return null;
         }
+
         getTrailerDataFromJson(buffer.toString());
       } catch (IOException e) {
         e.printStackTrace();

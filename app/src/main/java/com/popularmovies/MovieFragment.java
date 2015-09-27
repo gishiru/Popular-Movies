@@ -40,6 +40,13 @@ public class MovieFragment extends Fragment
   private static final String BUNDLE_KEY_GRID_INDEX = "index";
   private static final String BUNDLE_KEY_MOVIE_LIST = "movie list";
 
+  /** Constants for building URI to call API. */
+  private static final String DISCOVER_ENDPOINT = "discover/movie";
+  static final String MOVIE_DB_URL = "http://api.themoviedb.org/3";
+  static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
+  private static final String QUERY_SORT_BY = "sort_by";
+  static final String QUERY_API_KEY = "api_key";
+
   /** Constant for Extra. */
   static final String EXTRA_KEY_MOVIE_DATA = "movie parcelable";
 
@@ -107,9 +114,17 @@ public class MovieFragment extends Fragment
         // Start background task.
         new FetchMovieTask()
             .execute(
-                // Pass preference information to AsyncTask regarding sort order.
-                mPrefs.getString(getString(R.string.pref_key_sort_order),
-                    getString(R.string.pref_default_sort_order)),
+                Uri.parse(MOVIE_DB_URL)
+                    .buildUpon()
+                    .appendEncodedPath(DISCOVER_ENDPOINT)
+                    .appendQueryParameter(
+                        QUERY_SORT_BY,
+                        // Pass preference information to AsyncTask regarding sort order.
+                        mPrefs.getString(
+                            getString(R.string.pref_key_sort_order),
+                            getString(R.string.pref_default_sort_order)))
+                    .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
+                    .build().toString(),
                 null, null);
 
         Log.d(LOG_TAG, "fetch data");
@@ -148,12 +163,6 @@ public class MovieFragment extends Fragment
   }
 
   class FetchMovieTask extends AsyncTask<String, Void, Void> {
-    /** Constants for building URI to call API. */
-    static final String MOVIE_DB_URL = "http://api.themoviedb.org/3";
-    private static final String DISCOVER_ENDPOINT = "discover/movie";
-    static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
-    private static final String QUERY_SORT_BY = "sort_by";
-    static final String QUERY_API_KEY = "api_key";
     static final String REQUEST_METHOD = "GET";
 
     @Override
@@ -166,18 +175,13 @@ public class MovieFragment extends Fragment
     }
 
     @Override
-    protected Void doInBackground(String... sortOrder) {
+    protected Void doInBackground(String... url) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
       try {
         // Create the request to themoviedb.org, and open the connection.
-        urlConnection = (HttpURLConnection) new URL(Uri.parse(MOVIE_DB_URL)
-            .buildUpon()
-            .appendEncodedPath(DISCOVER_ENDPOINT)
-            .appendQueryParameter(QUERY_SORT_BY, sortOrder[0])
-            .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
-            .build().toString()).openConnection();
+        urlConnection = (HttpURLConnection) new URL(url[0]).openConnection();
         urlConnection.setRequestMethod(REQUEST_METHOD);
         urlConnection.connect();
 
