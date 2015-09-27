@@ -123,7 +123,7 @@ public class DetailFragment extends Fragment {
         if (buffer.length() == 0) {
           return null;
         }
-        Log.d(DetailFragment.class.getSimpleName(), "jstr " + buffer.toString());
+        getReviewDataFromJson(buffer.toString());
       } catch (IOException e) {
         e.printStackTrace();
         return null;
@@ -165,6 +165,18 @@ public class DetailFragment extends Fragment {
         .appendPath(VIDEO_ENDPOINT)
         .appendQueryParameter(MovieFragment.QUERY_API_KEY, MovieFragment.PARAM_API_KEY)
         .build().toString();
+  }
+
+  private void getReviewDataFromJson(String trailerJsonStr) throws JSONException {
+    /** Constants for JSON data. */
+    final String JSON_KEY_AUTHOR = "author";
+    final String JSON_KEY_RESULTS = "results";
+
+    JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
+    for (int i = 0; i < jsonArray.length(); i++) {
+      Log.d(DetailFragment.class.getSimpleName(),
+          "author " + jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR));
+    }
   }
 
   private void getTrailerDataFromJson(String trailerJsonStr) throws JSONException {
