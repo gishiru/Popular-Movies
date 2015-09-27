@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,19 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.util.List;
 
 /**
  * Created by gishiru on 2015/07/31.
  */
 public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
+  /** Constants for building URL to get image. */
+  final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
+  final String IMAGE_SIZE = "w185";
+
   /** Log tag. */
   private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
@@ -68,8 +75,19 @@ public class MovieAdapter extends ArrayAdapter<MovieParcelable> {
         Log.e(LOG_TAG, "Picasso loading failed");
       }
     };
-    imageView.setTag(target); // Target will last as long as its view is alive.
-    Picasso.with(mContext).load(movieParcelable.url).into(new WeakReference<>(target).get());
+    imageView.setTag(target);  // Target will last as long as its view is alive.
+    try {
+      Picasso.with(mContext)
+          .load((new URL(
+              Uri.parse(IMAGE_DB_URL).buildUpon()
+                  .appendPath(IMAGE_SIZE)
+                  .appendEncodedPath(movieParcelable.url)
+                  .toString())
+          ).toString())
+          .into(new WeakReference<>(target).get());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return imageView;
   }
 }

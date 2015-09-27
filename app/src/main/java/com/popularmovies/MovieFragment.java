@@ -242,10 +242,6 @@ public class MovieFragment extends Fragment
   }
 
   private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
-    /** Constants for building URL to get image. */
-    final String IMAGE_DB_URL = "http://image.tmdb.org/t/p/";
-    final String IMAGE_SIZE = "w185";
-
     /** Constants for JSON data. */
     final String JSON_KEY_ID = "id";
     final String JSON_KEY_OVERVIEW = "overview";
@@ -256,30 +252,17 @@ public class MovieFragment extends Fragment
     final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     // Parse JSON string received from API and store it to data set.
-    try {
-      JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
-      for (int i = 0; i < jsonArray.length(); i++) {
-        mMovieList.add(i, new MovieParcelable(
-            jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
-            jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
-            null,
-            jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
-            jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
-            (new URL(
-                Uri.parse(IMAGE_DB_URL)
-                    .buildUpon()
-                    .appendPath(IMAGE_SIZE)
-                    .appendEncodedPath(
-                        jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH))
-                    .toString()))
-                .toString(),
-            jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
-        ));
-      }
-    } catch (JSONException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
+    for (int i = 0; i < jsonArray.length(); i++) {
+      mMovieList.add(i, new MovieParcelable(
+          jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
+          jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
+          null,
+          jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
+          jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
+          jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH),
+          jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
+      ));
     }
   }
 }
