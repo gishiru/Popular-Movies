@@ -260,7 +260,10 @@ public class MovieFragment extends Fragment
     JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
     for (int i = 0; i < jsonArray.length(); i++) {
       mMovieList.add(i, new MovieParcelable(
+          null,
+          null,
           jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
+          null,
           jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
           null,
           jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH),

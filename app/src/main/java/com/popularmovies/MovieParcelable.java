@@ -9,7 +9,10 @@ import android.os.Parcelable;
  */
 public class MovieParcelable implements Parcelable {
   /** Movie parameters */
+  String author = "";
+  String content = "";
   String id = "";
+  String key = "";
   String overview = "";
   Bitmap poster = null;
   String posterPath = "";
@@ -17,9 +20,13 @@ public class MovieParcelable implements Parcelable {
   String title = "";
   String voteAverage = "";
 
-  public MovieParcelable(String id, String overview, Bitmap poster, String posterPath,
-                         String releaseDate, String title, String voteAverage) {
+  public MovieParcelable(String author, String content, String id, String key, String overview,
+                         Bitmap poster, String posterPath, String releaseDate, String title,
+                         String voteAverage) {
+    this.author = author;
+    this.content = content;
     this.id = id;
+    this.key = key;
     this.overview = overview;
     this.poster = poster;
     this.posterPath = posterPath;
@@ -33,7 +40,10 @@ public class MovieParcelable implements Parcelable {
    * @param in
    */
   public MovieParcelable(Parcel in) {
+    author = in.readString();
+    content = in.readString();
     id = in.readString();
+    key = in.readString();
     overview = in.readString();
     poster = in.readParcelable(Bitmap.class.getClassLoader());
     posterPath = in.readString();
@@ -49,7 +59,10 @@ public class MovieParcelable implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(author);
+    dest.writeString(content);
     dest.writeString(id);
+    dest.writeString(key);
     dest.writeString(overview);
     dest.writeParcelable(poster, flags);
     dest.writeString(posterPath);

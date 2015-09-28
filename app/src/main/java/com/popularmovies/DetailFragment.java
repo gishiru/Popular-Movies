@@ -54,7 +54,10 @@ public class DetailFragment extends Fragment {
     // Initialize
     mDetailList = new ArrayList<>();
     mDetailList.add(0, new MovieParcelable(
+        null,
+        null,
         mMovieParcelable.id,
+        null,
         mMovieParcelable.overview,
         mMovieParcelable.poster,
         mMovieParcelable.posterPath,
@@ -139,7 +142,7 @@ public class DetailFragment extends Fragment {
         urlConnection = (HttpURLConnection) new URL(buildFetchReviewUri()).openConnection();
         urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
-
+        
         // Read the input stream.
         inputStream = urlConnection.getInputStream();
         if (inputStream == null) {
@@ -209,6 +212,7 @@ public class DetailFragment extends Fragment {
   private void getReviewDataFromJson(String trailerJsonStr) throws JSONException {
     /** Constants for JSON data. */
     final String JSON_KEY_AUTHOR = "author";
+    final String JSON_KEY_CONTENT = "content";
     final String JSON_KEY_RESULTS = "results";
 
     JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
