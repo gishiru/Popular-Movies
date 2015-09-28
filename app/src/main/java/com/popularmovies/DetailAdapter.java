@@ -2,6 +2,7 @@ package com.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,9 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
     MovieParcelable movieParcelable = getItem(position);
     if (viewType == VIEW_TYPE_LIST) {
       if (position == 1) {
-        ((TextView)view.findViewById(R.id.trailers)).setText("Trailers:");
+        TextView trailers = (TextView) view.findViewById(R.id.trailers);
+        trailers.setText("Trailers:");
+        trailers.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);  // Set text size here to reuse layout.
       }
     } else {
       ((TextView)view.findViewById(R.id.overview)).setText(movieParcelable.overview);
