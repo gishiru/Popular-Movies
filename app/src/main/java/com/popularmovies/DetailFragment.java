@@ -1,5 +1,8 @@
 package com.popularmovies;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +30,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class DetailFragment extends Fragment {
+  private static final String LOG_TAG = DetailFragment.class.getSimpleName();
   private static final String MOVIE_ENDPOINT = "movie";
   private static final String REVIEW_ENDPOINT = "reviews";
   private static final String VIDEO_ENDPOINT = "videos";
@@ -76,7 +81,17 @@ public class DetailFragment extends Fragment {
   public void onStart() {
     super.onStart();
 
-    new FetchMovieDetailTask().execute();
+    // Check network connection before fetch data.
+    NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
+        .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+    if ((networkInfo != null) && networkInfo.isConnected()) {
+      // Start background task.
+      new FetchMovieDetailTask().execute();
+
+      Log.d(LOG_TAG, "fetch data");
+    } else {
+      Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
+    }
   }
 
   private class FetchMovieDetailTask extends AsyncTask<Void, Void, Void> {
@@ -198,8 +213,7 @@ public class DetailFragment extends Fragment {
 
     JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
     for (int i = 0; i < jsonArray.length(); i++) {
-      Log.d(DetailFragment.class.getSimpleName(),
-          "author " + jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR));
+      Log.d(LOG_TAG, "author " + jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR));
     }
   }
 
@@ -210,8 +224,7 @@ public class DetailFragment extends Fragment {
 
     JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
     for (int i = 0; i < jsonArray.length(); i++) {
-      Log.d(DetailFragment.class.getSimpleName(),
-          "key " + jsonArray.getJSONObject(i).getString(JSON_KEY_KEY));
+      Log.d(LOG_TAG, "key " + jsonArray.getJSONObject(i).getString(JSON_KEY_KEY));
     }
   }
 }
