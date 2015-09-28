@@ -38,6 +38,7 @@ public class DetailFragment extends Fragment {
   private MovieFragment mActivity = null;
   private DetailAdapter mDetailAdapter = null;
   private ArrayList<MovieParcelable> mDetailList = null;
+  static int sNumOfTrailers = 0;
   private MovieParcelable mMovieParcelable = null;
 
   public DetailFragment() {
@@ -216,8 +217,22 @@ public class DetailFragment extends Fragment {
     final String JSON_KEY_RESULTS = "results";
 
     JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
+    if (jsonArray.length() == 0) {
+      return;
+    }
     for (int i = 0; i < jsonArray.length(); i++) {
-      Log.d(LOG_TAG, "author " + jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR));
+      mDetailList.add(i + sNumOfTrailers, new MovieParcelable(
+          jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR),
+          jsonArray.getJSONObject(i).getString(JSON_KEY_CONTENT),
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+      ));
     }
   }
 
@@ -227,8 +242,23 @@ public class DetailFragment extends Fragment {
     final String JSON_KEY_RESULTS = "results";
 
     JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
-    for (int i = 0; i < jsonArray.length(); i++) {
-      Log.d(LOG_TAG, "key " + jsonArray.getJSONObject(i).getString(JSON_KEY_KEY));
+    if (jsonArray.length() == 0) {
+      Log.d(LOG_TAG, "no trailers");
+      return;
+    }
+    for (sNumOfTrailers = 1; sNumOfTrailers < jsonArray.length(); sNumOfTrailers++) {
+      mDetailList.add(sNumOfTrailers, new MovieParcelable(
+          null,
+          null,
+          null,
+          jsonArray.getJSONObject(sNumOfTrailers).getString(JSON_KEY_KEY),
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+      ));
     }
   }
 }
