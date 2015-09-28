@@ -54,18 +54,6 @@ public class DetailFragment extends Fragment {
 
     // Initialize
     mDetailList = new ArrayList<>();
-    mDetailList.add(0, new MovieParcelable(
-        null,
-        null,
-        mMovieParcelable.id,
-        null,
-        mMovieParcelable.overview,
-        mMovieParcelable.poster,
-        mMovieParcelable.posterPath,
-        mMovieParcelable.releaseDate,
-        mMovieParcelable.title,
-        mMovieParcelable.voteAverage
-    ));
     mDetailAdapter = new DetailAdapter(getActivity(), mDetailList, this);
   }
 
@@ -85,20 +73,49 @@ public class DetailFragment extends Fragment {
   public void onStart() {
     super.onStart();
 
-    // Check network connection before fetch data.
-    NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
-        .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-    if ((networkInfo != null) && networkInfo.isConnected()) {
-      // Start background task.
-      new FetchMovieDetailTask().execute();
+    if (mDetailList.size() == 0) {
+      // Check network connection before fetch data.
+      NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
+          .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+      if ((networkInfo != null) && networkInfo.isConnected()) {
+        // Start background task.
+        new FetchMovieDetailTask().execute();
 
-      Log.d(LOG_TAG, "fetch data");
-    } else {
-      Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
+        Log.d(LOG_TAG, "fetch data");
+      } else {
+        Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
+      }
     }
   }
 
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+
+    // Clear old database info.
+    mDetailList.clear();
+    mDetailAdapter.clear();
+  }
+
   private class FetchMovieDetailTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+
+      mDetailList.add(0, new MovieParcelable(
+          null,
+          null,
+          mMovieParcelable.id,
+          null,
+          mMovieParcelable.overview,
+          mMovieParcelable.poster,
+          mMovieParcelable.posterPath,
+          mMovieParcelable.releaseDate,
+          mMovieParcelable.title,
+          mMovieParcelable.voteAverage
+      ));
+    }
+
     @Override
     protected Void doInBackground(Void... voids) {
       BufferedReader reader = null;
