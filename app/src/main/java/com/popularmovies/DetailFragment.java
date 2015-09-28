@@ -35,10 +35,10 @@ public class DetailFragment extends Fragment {
   private static final String REVIEW_ENDPOINT = "reviews";
   private static final String VIDEO_ENDPOINT = "videos";
 
+  int numberOfTrailers = 0;
   private MovieFragment mActivity = null;
   private DetailAdapter mDetailAdapter = null;
   private ArrayList<MovieParcelable> mDetailList = null;
-  static int sNumOfTrailers = 0;
   private MovieParcelable mMovieParcelable = null;
 
   public DetailFragment() {
@@ -66,7 +66,7 @@ public class DetailFragment extends Fragment {
         mMovieParcelable.title,
         mMovieParcelable.voteAverage
     ));
-    mDetailAdapter = new DetailAdapter(getActivity(), mDetailList);
+    mDetailAdapter = new DetailAdapter(getActivity(), mDetailList, this);
   }
 
   @Override
@@ -110,6 +110,8 @@ public class DetailFragment extends Fragment {
         urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
 
+        Log.d(LOG_TAG, "trailers uri " + buildFetchTrailerUri());
+
         // Read the input stream.
         InputStream inputStream = urlConnection.getInputStream();
         if (inputStream == null) {
@@ -143,7 +145,9 @@ public class DetailFragment extends Fragment {
         urlConnection = (HttpURLConnection) new URL(buildFetchReviewUri()).openConnection();
         urlConnection.setRequestMethod(MovieFragment.FetchMovieTask.REQUEST_METHOD);
         urlConnection.connect();
-        
+
+        Log.d(LOG_TAG, "reviews uri " + buildFetchReviewUri());
+
         // Read the input stream.
         inputStream = urlConnection.getInputStream();
         if (inputStream == null) {
@@ -221,7 +225,7 @@ public class DetailFragment extends Fragment {
       return;
     }
     for (int i = 0; i < jsonArray.length(); i++) {
-      mDetailList.add(i + sNumOfTrailers, new MovieParcelable(
+      mDetailList.add(i + numberOfTrailers + 1, new MovieParcelable(
           jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR),
           jsonArray.getJSONObject(i).getString(JSON_KEY_CONTENT),
           null,
@@ -234,6 +238,7 @@ public class DetailFragment extends Fragment {
           null
       ));
     }
+    Log.d(LOG_TAG, "reviews " + (mDetailList.size() - 1 - numberOfTrailers));
   }
 
   private void getTrailerDataFromJson(String trailerJsonStr) throws JSONException {
@@ -246,12 +251,12 @@ public class DetailFragment extends Fragment {
       Log.d(LOG_TAG, "no trailers");
       return;
     }
-    for (sNumOfTrailers = 1; sNumOfTrailers < jsonArray.length(); sNumOfTrailers++) {
-      mDetailList.add(sNumOfTrailers, new MovieParcelable(
+    for (int i = 0; i < jsonArray.length(); i++) {
+      mDetailList.add(i + 1, new MovieParcelable(
           null,
           null,
           null,
-          jsonArray.getJSONObject(sNumOfTrailers).getString(JSON_KEY_KEY),
+          jsonArray.getJSONObject(i).getString(JSON_KEY_KEY),
           null,
           null,
           null,
@@ -260,5 +265,7 @@ public class DetailFragment extends Fragment {
           null
       ));
     }
+    numberOfTrailers = mDetailList.size() - 1;
+    Log.d(LOG_TAG, "trailers " + numberOfTrailers);
   }
 }

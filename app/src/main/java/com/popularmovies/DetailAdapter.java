@@ -21,11 +21,13 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
   private static final int VIEW_TYPE_TRAILERS = 1;
   private static final int VIEW_TYPE_TOPVIEW = 2;
 
+  private DetailFragment mActivity = null;
   private Context mContext = null;
 
-  public DetailAdapter(Activity c, List<MovieParcelable> movieParcelables) {
+  public DetailAdapter(Activity c, List<MovieParcelable> movieParcelables, DetailFragment activity) {
     super(c, 0, movieParcelables);
 
+    mActivity = activity;
     mContext = c;
   }
 
@@ -74,7 +76,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
     if (position == 0) {
       return VIEW_TYPE_TOPVIEW;
     } else {
-      if (DetailFragment.sNumOfTrailers >= position) {
+      if (mActivity.numberOfTrailers >= position) {
         return VIEW_TYPE_TRAILERS;
       } else {
         return VIEW_TYPE_REVIEW;
