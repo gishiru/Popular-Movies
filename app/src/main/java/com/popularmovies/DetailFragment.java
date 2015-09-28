@@ -8,8 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -31,10 +31,33 @@ public class DetailFragment extends Fragment {
   private static final String VIDEO_ENDPOINT = "videos";
 
   private MovieFragment mActivity = null;
-  private String mMovieId = "";
+  private DetailAdapter mDetailAdapter = null;
+  private ArrayList<MovieParcelable> mDetailList = null;
+  private MovieParcelable mMovieParcelable = null;
 
   public DetailFragment() {
     mActivity = new MovieFragment();
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // Get extras.
+    mMovieParcelable = getActivity().getIntent().getParcelableExtra(mActivity.EXTRA_KEY_MOVIE_DATA);
+
+    // Initialize
+    mDetailList = new ArrayList<>();
+    mDetailList.add(0, new MovieParcelable(
+        mMovieParcelable.id,
+        mMovieParcelable.overview,
+        mMovieParcelable.poster,
+        mMovieParcelable.posterPath,
+        mMovieParcelable.releaseDate,
+        mMovieParcelable.title,
+        mMovieParcelable.voteAverage
+    ));
+    mDetailAdapter = new DetailAdapter(getActivity(), mDetailList);
   }
 
   @Override
@@ -42,17 +65,9 @@ public class DetailFragment extends Fragment {
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-    // Get extras.
-    MovieParcelable movieParcelable = getActivity().getIntent()
-        .getParcelableExtra(mActivity.EXTRA_KEY_MOVIE_DATA);
-    mMovieId = movieParcelable.id;
-
-    // Set views.
-    ((TextView)rootView.findViewById(R.id.overview)).setText(movieParcelable.overview);
-    ((ImageView)rootView.findViewById(R.id.thumbnail)).setImageBitmap(movieParcelable.poster);
-    ((TextView)rootView.findViewById(R.id.original_title)).setText(movieParcelable.title);
-    ((TextView)rootView.findViewById(R.id.release_date)).setText(movieParcelable.releaseDate);
-    ((TextView)rootView.findViewById(R.id.vote_average)).setText(movieParcelable.voteAverage + "/10");
+    // Get a reference to a list view, and attach this adapter to it.
+    ListView listView = (ListView) rootView.findViewById(R.id.listview_detail);
+    listView.setAdapter(mDetailAdapter);
 
     return rootView;
   }
@@ -123,6 +138,7 @@ public class DetailFragment extends Fragment {
         if (buffer.length() == 0) {
           return null;
         }
+
         getReviewDataFromJson(buffer.toString());
       } catch (IOException e) {
         e.printStackTrace();
@@ -145,13 +161,21 @@ public class DetailFragment extends Fragment {
 
       return null;
     }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+      super.onPostExecute(aVoid);
+
+      // Refresh adapter.
+      mDetailAdapter.notifyDataSetChanged();
+    }
   }
 
   private String  buildFetchReviewUri() {
     return Uri.parse(MovieFragment.MOVIE_DB_URL)
         .buildUpon()
         .appendPath(MOVIE_ENDPOINT)
-        .appendPath(mMovieId)
+        .appendPath(mMovieParcelable.id)
         .appendPath(REVIEW_ENDPOINT)
         .appendQueryParameter(MovieFragment.QUERY_API_KEY, MovieFragment.PARAM_API_KEY)
         .build().toString();
@@ -161,7 +185,7 @@ public class DetailFragment extends Fragment {
     return Uri.parse(MovieFragment.MOVIE_DB_URL)
         .buildUpon()
         .appendPath(MOVIE_ENDPOINT)
-        .appendPath(mMovieId)
+        .appendPath(mMovieParcelable.id)
         .appendPath(VIDEO_ENDPOINT)
         .appendQueryParameter(MovieFragment.QUERY_API_KEY, MovieFragment.PARAM_API_KEY)
         .build().toString();
