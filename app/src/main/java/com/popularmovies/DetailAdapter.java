@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
   private static final int VIEW_TYPE_COUNT = 2;
-  private static final int VIEW_TYPE_LIST = 0;
+  private static final int VIEW_TYPE_TRAILERS = 0;
   private static final int VIEW_TYPE_TOPVIEW = 1;
 
   private Context mContext = null;
@@ -35,9 +35,9 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
     if (convertView != null) {
       view = convertView;
     } else  {
-      if (viewType == VIEW_TYPE_LIST) {
+      if (viewType == VIEW_TYPE_TRAILERS) {
         view = LayoutInflater.from(mContext)
-            .inflate(R.layout.listview_detail_list, parent, false);
+            .inflate(R.layout.listview_detail_trailers, parent, false);
       } else {
         view = LayoutInflater.from(mContext)
             .inflate(R.layout.listview_detail_topview, parent, false);
@@ -46,7 +46,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
     // Set views.
     MovieParcelable movieParcelable = getItem(position);
-    if (viewType == VIEW_TYPE_LIST) {
+    if (viewType == VIEW_TYPE_TRAILERS) {
       if (position == 1) {
         TextView trailers = (TextView) view.findViewById(R.id.trailers);
         trailers.setText("Trailers:");
@@ -64,7 +64,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
   @Override
   public int getItemViewType(int position) {
-    return position == 0 ? VIEW_TYPE_TOPVIEW : VIEW_TYPE_LIST;
+    return position == 0 ? VIEW_TYPE_TOPVIEW : VIEW_TYPE_TRAILERS;
   }
 
   @Override
