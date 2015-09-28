@@ -214,16 +214,19 @@ public class DetailFragment extends Fragment {
         .build().toString();
   }
 
-  private void getReviewDataFromJson(String trailerJsonStr) throws JSONException {
+  private void getReviewDataFromJson(String reviewJsonStr) throws JSONException {
     /** Constants for JSON data. */
     final String JSON_KEY_AUTHOR = "author";
     final String JSON_KEY_CONTENT = "content";
     final String JSON_KEY_RESULTS = "results";
+    final String JSON_KEY_TOTAL_RESULTS = "total_results";
 
-    JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
-    if (jsonArray.length() == 0) {
+    JSONObject jsonObject = new JSONObject(reviewJsonStr);
+    if (jsonObject.getString(JSON_KEY_TOTAL_RESULTS).equals("0")) {
+      Log.d(LOG_TAG, "no reviews");
       return;
     }
+    JSONArray jsonArray = jsonObject.getJSONArray(JSON_KEY_RESULTS);
     for (int i = 0; i < jsonArray.length(); i++) {
       mDetailList.add(i + numberOfTrailers + 1, new MovieParcelable(
           jsonArray.getJSONObject(i).getString(JSON_KEY_AUTHOR),
@@ -247,7 +250,7 @@ public class DetailFragment extends Fragment {
     final String JSON_KEY_RESULTS = "results";
 
     JSONArray jsonArray = new JSONObject(trailerJsonStr).getJSONArray(JSON_KEY_RESULTS);
-    if (jsonArray.length() == 0) {
+    if (jsonArray.getJSONObject(0).getString(JSON_KEY_KEY).equals("")) {
       Log.d(LOG_TAG, "no trailers");
       return;
     }
@@ -256,7 +259,7 @@ public class DetailFragment extends Fragment {
           null,
           null,
           null,
-          jsonArray.getJSONObject(i).getString(JSON_KEY_KEY),
+          jsonArray.getJSONObject(0).getString(JSON_KEY_KEY),
           null,
           null,
           null,
