@@ -2,7 +2,9 @@ package com.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -75,7 +77,15 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
         trailerButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            Log.d(DetailAdapter.class.getSimpleName(), "launch trailer" + position);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("vnd.youtube:" + movieParcelable.key));
+            intent.putExtra("VIDEO_ID", movieParcelable.key);
+            if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+              mContext.startActivity(intent);
+            } else {
+              Log.d(DetailAdapter.class.getSimpleName(), "Couldn't call " + movieParcelable.title
+                  + ", no receiving apps install");
+            }
           }
         });
       } else {
