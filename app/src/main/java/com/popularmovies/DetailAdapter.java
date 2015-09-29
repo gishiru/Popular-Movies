@@ -25,6 +25,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
   private DetailFragment mActivity = null;
   private Context mContext = null;
+  private boolean mLiked = false;
 
   public DetailAdapter(Activity c, List<MovieParcelable> movieParcelables, DetailFragment activity) {
     super(c, 0, movieParcelables);
@@ -45,11 +46,18 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
             .inflate(R.layout.listview_detail_topview, parent, false);
 
         // Get a reference to image buttons, and set click listener.
-        ImageButton likeButton = (ImageButton)view.findViewById(R.id.like_unlike_button);
+        final ImageButton likeButton = (ImageButton)view.findViewById(R.id.like_dislike_button);
         likeButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            Log.d(DetailAdapter.class.getSimpleName(), "liked/unliked");
+            Log.d(DetailAdapter.class.getSimpleName(), "clicked");
+            if (mLiked) {
+              mLiked = false;
+              likeButton.setImageResource(R.drawable.dislike_button);
+            } else {
+              mLiked = true;
+              likeButton.setImageResource(R.drawable.like_button);
+            }
           }
         });
       } else if (viewType == VIEW_TYPE_TRAILERS) {
