@@ -3,8 +3,8 @@ package com.popularmovies;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -70,10 +70,8 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
             } else {
               mFavorite = true;
               favoriteButton.setImageResource(R.drawable.like_button);
-              SharedPreferences.Editor editor = mContext
-                  .getSharedPreferences("favorite_movies", Context.MODE_PRIVATE).edit();
-              editor.putString(movieParcelable.id, movieParcelable.id);
-              editor.apply();
+              PreferenceManager.getDefaultSharedPreferences(mContext).edit()
+                  .putString(movieParcelable.id, movieParcelable.id).commit();
             }
           }
         });
