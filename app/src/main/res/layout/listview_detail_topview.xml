@@ -14,7 +14,6 @@
       android:paddingLeft="20dp"
       android:paddingRight="20dp"
       android:paddingBottom="30dp"
-      android:text="No contents"
       android:textColor="@android:color/white"
       android:textSize="50sp"/>
 
@@ -34,6 +33,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
         android:orientation="vertical">
 
       <TextView
@@ -41,8 +41,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="10dp"
-          android:layout_marginLeft="40dp"
-          android:text="YY"
           android:textColor="@color/material_blue_grey_800"
           android:textSize="25sp"/>
 
@@ -51,11 +49,17 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="40dp"
-          android:layout_marginLeft="40dp"
-          android:text="X.X/10"
           android:textAppearance="?android:attr/textAppearanceSmall"
           android:textColor="@color/material_blue_grey_800"
           android:textStyle="bold"/>
+
+      <ImageButton
+          android:background="@null"
+          android:id="@+id/like_unlike_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:src="@drawable/like_unlike_button"/>
 
     </LinearLayout>
 
@@ -71,7 +75,6 @@
       android:paddingLeft="20dp"
       android:paddingRight="20dp"
       android:paddingBottom="20dp"
-      android:text="No contents"
       android:textAppearance="?android:attr/textAppearanceSmall"
       android:textColor="@color/material_blue_grey_800"/>
 
