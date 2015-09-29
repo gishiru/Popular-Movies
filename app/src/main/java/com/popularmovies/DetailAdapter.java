@@ -21,6 +21,15 @@ import java.util.List;
  * Created by gishiru on 2015/09/27.
  */
 public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
+  private static final String BASE_URI_YOUTUBE = "vnd.youtube:";
+
+  /** Constant for Extra. */
+  private static final String EXTRA_KEY_VIDEO_ID = "VIDEO_ID";
+
+  /** Log tag. */
+  private static final String LOG_TAG = DetailAdapter.class.getSimpleName();
+
+  /** Constants for view types. */
   private static final int VIEW_TYPE_COUNT = 3;
   private static final int VIEW_TYPE_REVIEW = 0;
   private static final int VIEW_TYPE_TRAILERS = 1;
@@ -54,7 +63,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            Log.d(DetailAdapter.class.getSimpleName(), "clicked");
+            Log.d(LOG_TAG, "clicked");
             if (mFavorite) {
               mFavorite = false;
               favoriteButton.setImageResource(R.drawable.dislike_button);
@@ -78,13 +87,13 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
           @Override
           public void onClick(View v) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("vnd.youtube:" + movieParcelable.key));
-            intent.putExtra("VIDEO_ID", movieParcelable.key);
+            intent.setData(Uri.parse(BASE_URI_YOUTUBE + movieParcelable.key));
+            intent.putExtra(EXTRA_KEY_VIDEO_ID, movieParcelable.key);
             if (intent.resolveActivity(mContext.getPackageManager()) != null) {
               mContext.startActivity(intent);
             } else {
-              Log.d(DetailAdapter.class.getSimpleName(), "Couldn't call " + movieParcelable.title
-                  + ", no receiving apps install");
+              Log.d(LOG_TAG, "Couldn't call " + movieParcelable.title +
+                  ", no receiving apps install");
             }
           }
         });
