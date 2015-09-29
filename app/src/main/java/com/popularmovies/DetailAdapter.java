@@ -84,6 +84,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
         trailers.setText("Trailers:");
         trailers.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);  // Set text size here to reuse layout.
       }
+      ((TextView) view.findViewById(R.id.trailer)).setText("Trailer " + position);
     } else {
       if ((mActivity.numberOfTrailers + 1) == position) {
         TextView reviews = (TextView) view.findViewById(R.id.reviews);
