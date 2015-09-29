@@ -2,11 +2,13 @@ package com.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +34,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
   }
 
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(final int position, View convertView, ViewGroup parent) {
     View view;
     int viewType = getItemViewType(position);
     if (convertView != null) {
@@ -41,9 +43,27 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
       if (viewType == VIEW_TYPE_TOPVIEW) {
         view = LayoutInflater.from(mContext)
             .inflate(R.layout.listview_detail_topview, parent, false);
+
+        // Get a reference to image buttons, and set click listener.
+        ImageButton likeButton = (ImageButton)view.findViewById(R.id.like_unlike_button);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Log.d(DetailAdapter.class.getSimpleName(), "liked/unliked");
+          }
+        });
       } else if (viewType == VIEW_TYPE_TRAILERS) {
         view = LayoutInflater.from(mContext)
             .inflate(R.layout.listview_detail_trailers, parent, false);
+
+        // Get a reference to image buttons, and set click listener.
+        ImageButton trailerButton = (ImageButton)view.findViewById(R.id.trailer_button);
+        trailerButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Log.d(DetailAdapter.class.getSimpleName(), "launch trailer" + position);
+          }
+        });
       } else {
         view = LayoutInflater.from(mContext)
             .inflate(R.layout.listview_detail_reviews, parent, false);
