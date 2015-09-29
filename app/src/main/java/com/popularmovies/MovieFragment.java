@@ -112,9 +112,13 @@ public class MovieFragment extends Fragment
           .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
       if ((networkInfo != null) && networkInfo.isConnected()) {
         // Start background task.
-        new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
-
-        Log.d(LOG_TAG, "fetch data");
+        if (mPrefs.getString(getString(R.string.pref_key_sort_order),
+            getString(R.string.pref_default_sort_order)).equals("favorites")) {
+          Log.d(LOG_TAG, "favorites");
+        } else {
+          new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
+          Log.d(LOG_TAG, "fetch data");
+        }
       } else {
         Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
       }

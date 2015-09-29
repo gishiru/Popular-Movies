@@ -6,9 +6,11 @@
   <string-array name="pref_sort_order_titles">
     <item>Most popular</item>
     <item>Hiest-rated</item>
+    <item>favorites</item>
   </string-array>
   <string-array name="pref_sort_order_values">
     <item>popularity.desc</item>
     <item>vote_count.desc</item>
+    <item>favorites</item>
   </string-array>
 </resources>
