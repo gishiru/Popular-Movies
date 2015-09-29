@@ -3,6 +3,7 @@ package com.popularmovies;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -37,13 +38,15 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
   private DetailFragment mActivity = null;
   private Context mContext = null;
-  private boolean mFavorite = false;
+  private boolean mIsFavorite = false;
+  private SharedPreferences mPrefs = null;
 
   public DetailAdapter(Activity c, List<MovieParcelable> movieParcelables, DetailFragment activity) {
     super(c, 0, movieParcelables);
 
     mActivity = activity;
     mContext = c;
+    mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
   }
 
   @Override
@@ -60,18 +63,22 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
         // Get a reference to image buttons, and set click listener.
         final ImageButton favoriteButton = (ImageButton)view.findViewById(R.id.like_dislike_button);
+        if ((mPrefs.getString(movieParcelable.id, "").equals(movieParcelable.id))) {
+          mIsFavorite = true;
+          favoriteButton.setImageResource(R.drawable.like_button);
+        }
         favoriteButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
             Log.d(LOG_TAG, "clicked");
-            if (mFavorite) {
-              mFavorite = false;
+            if (mIsFavorite) {
+              mIsFavorite = false;
               favoriteButton.setImageResource(R.drawable.dislike_button);
+              mPrefs.edit().remove(movieParcelable.id).commit();
             } else {
-              mFavorite = true;
+              mIsFavorite = true;
               favoriteButton.setImageResource(R.drawable.like_button);
-              PreferenceManager.getDefaultSharedPreferences(mContext).edit()
-                  .putString(movieParcelable.id, movieParcelable.id).commit();
+              mPrefs.edit().putString(movieParcelable.id, movieParcelable.id).commit();
             }
           }
         });
