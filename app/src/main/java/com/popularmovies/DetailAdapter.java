@@ -2,6 +2,7 @@ package com.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
   private DetailFragment mActivity = null;
   private Context mContext = null;
-  private boolean mLiked = false;
+  private boolean mFavorite = false;
 
   public DetailAdapter(Activity c, List<MovieParcelable> movieParcelables, DetailFragment activity) {
     super(c, 0, movieParcelables);
@@ -36,6 +37,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
   @Override
   public View getView(final int position, View convertView, ViewGroup parent) {
+    final MovieParcelable movieParcelable = getItem(position);
     View view;
     int viewType = getItemViewType(position);
     if (convertView != null) {
@@ -46,17 +48,21 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
             .inflate(R.layout.listview_detail_topview, parent, false);
 
         // Get a reference to image buttons, and set click listener.
-        final ImageButton likeButton = (ImageButton)view.findViewById(R.id.like_dislike_button);
-        likeButton.setOnClickListener(new View.OnClickListener() {
+        final ImageButton favoriteButton = (ImageButton)view.findViewById(R.id.like_dislike_button);
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
             Log.d(DetailAdapter.class.getSimpleName(), "clicked");
-            if (mLiked) {
-              mLiked = false;
-              likeButton.setImageResource(R.drawable.dislike_button);
+            if (mFavorite) {
+              mFavorite = false;
+              favoriteButton.setImageResource(R.drawable.dislike_button);
             } else {
-              mLiked = true;
-              likeButton.setImageResource(R.drawable.like_button);
+              mFavorite = true;
+              favoriteButton.setImageResource(R.drawable.like_button);
+              SharedPreferences.Editor editor = mContext
+                  .getSharedPreferences("favorite_movies", Context.MODE_PRIVATE).edit();
+              editor.putString(movieParcelable.id, movieParcelable.id);
+              editor.apply();
             }
           }
         });
@@ -79,7 +85,6 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
     }
 
     // Set views.
-    MovieParcelable movieParcelable = getItem(position);
     if (viewType == VIEW_TYPE_TOPVIEW) {
       ((TextView)view.findViewById(R.id.overview)).setText(movieParcelable.overview);
       ((ImageView)view.findViewById(R.id.thumbnail)).setImageBitmap(movieParcelable.poster);
