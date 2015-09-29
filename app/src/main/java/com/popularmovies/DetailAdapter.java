@@ -71,7 +71,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
         reviews.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);  // Set text size here to reuse layout.
       }
       ((TextView)view.findViewById(R.id.author)).setText(movieParcelable.author);
-      ((TextView)view.findViewById(R.id.content)).setText(movieParcelable.content);
+      ((TextView)view.findViewById(R.id.content)).setText('"' + movieParcelable.content + '"');
     }
     return view;
   }
