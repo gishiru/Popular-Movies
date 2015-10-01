@@ -97,7 +97,7 @@ public class MovieFragment extends Fragment
     mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Start DetailActivity.
-        ((Callback)getActivity()).onItemSelected(mMovieList.get(position));
+        ((Callback) getActivity()).onItemSelected(mMovieList.get(position));
       }
     });
 
@@ -115,7 +115,7 @@ public class MovieFragment extends Fragment
       if ((networkInfo != null) && networkInfo.isConnected()) {
         if (mPrefs.getString(getString(R.string.pref_key_sort_order),
             getString(R.string.pref_default_sort_order)).equals("favorites")) {
-          Log.d(LOG_TAG, "favorites");
+          Log.d(LOG_TAG, "favorites " + mPrefs.getString(mMovieList.get(0).id, "no data"));
         } else {
           // Start background task.
           new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
