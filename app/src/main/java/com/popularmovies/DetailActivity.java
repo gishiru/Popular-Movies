@@ -12,6 +12,8 @@ public class DetailActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_detail);
+    getSupportFragmentManager().beginTransaction()
+        .add(R.id.movie_detail_container, new DetailFragment()).commit();
   }
 
 
