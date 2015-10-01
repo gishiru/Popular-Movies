@@ -3,16 +3,28 @@ package com.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
+  private static final String DETAIL_FRAGMENT_TAG = "DETAIL";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    // Tablet UI.
+    if (findViewById(R.id.movie_detail_container) != null) {
+      Log.d(MainActivity.class.getSimpleName(), "this is tablet.");
+      if (savedInstanceState == null) {
+        getSupportFragmentManager().beginTransaction()
+            .add(R.id.movie_detail_container, new DetailFragment(), DETAIL_FRAGMENT_TAG)
+            .commit();
+      }
+    }
   }
 
 
