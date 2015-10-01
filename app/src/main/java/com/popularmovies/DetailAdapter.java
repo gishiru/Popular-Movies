@@ -80,8 +80,13 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
             } else {
               mIsFavorite = true;
               favoriteButton.setImageResource(R.drawable.like_button);
-              mPrefs.edit().putString(movieParcelable.id, new Gson().toJson(movieParcelable))
-                  .commit();
+              new Thread(new Runnable() {
+                public void run() {
+                  Log.d(LOG_TAG, "runnable run");
+                  mPrefs.edit().putString(movieParcelable.id, new Gson().toJson(movieParcelable))
+                      .commit();
+                }
+              }).start();
             }
           }
         });
