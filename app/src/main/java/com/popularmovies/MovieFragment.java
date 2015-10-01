@@ -111,11 +111,11 @@ public class MovieFragment extends Fragment
       NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
           .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
       if ((networkInfo != null) && networkInfo.isConnected()) {
-        // Start background task.
         if (mPrefs.getString(getString(R.string.pref_key_sort_order),
             getString(R.string.pref_default_sort_order)).equals("favorites")) {
           Log.d(LOG_TAG, "favorites");
         } else {
+          // Start background task.
           new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
           Log.d(LOG_TAG, "fetch data");
         }
