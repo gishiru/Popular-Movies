@@ -1,7 +1,6 @@
 package com.popularmovies;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -60,6 +59,10 @@ public class MovieFragment extends Fragment
   private ArrayList<MovieParcelable> mMovieList = null;
   private SharedPreferences mPrefs = null;
 
+  public interface Callback {
+    public void onItemSelected(MovieParcelable movieParcelable);
+  }
+
   public MovieFragment() {
   }
 
@@ -94,8 +97,7 @@ public class MovieFragment extends Fragment
     mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Start DetailActivity.
-        startActivity(new Intent(getActivity(), DetailActivity.class)
-            .putExtra(EXTRA_KEY_MOVIE_DATA, mMovieList.get(position)));
+        ((Callback)getActivity()).onItemSelected(mMovieList.get(position));
       }
     });
 

@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements MovieFragment.Callback {
   private static final String DETAIL_FRAGMENT_TAG = "DETAIL";
 
   @Override
@@ -49,5 +49,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void onItemSelected(MovieParcelable movieParcelable) {
+    Log.d(MainActivity.class.getSimpleName(), "item selected");
   }
 }
