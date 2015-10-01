@@ -36,13 +36,11 @@ public class DetailFragment extends Fragment {
   private static final String VIDEO_ENDPOINT = "videos";
 
   int numberOfTrailers = 0;
-  private MovieFragment mActivity = null;
   private DetailAdapter mDetailAdapter = null;
   private ArrayList<MovieParcelable> mDetailList = null;
   private MovieParcelable mMovieParcelable = null;
 
   public DetailFragment() {
-    mActivity = new MovieFragment();
   }
 
   @Override
@@ -50,7 +48,12 @@ public class DetailFragment extends Fragment {
     super.onCreate(savedInstanceState);
 
     // Get extras.
-    mMovieParcelable = getActivity().getIntent().getParcelableExtra(mActivity.EXTRA_KEY_MOVIE_DATA);
+    Bundle arguments = getArguments();
+    if (arguments != null) {
+      mMovieParcelable = arguments.getParcelable(MovieFragment.EXTRA_KEY_MOVIE_DATA);
+
+      Log.d(DetailFragment.class.getSimpleName(), "get arguments " + mMovieParcelable);
+    }
 
     // Initialize
     mDetailList = new ArrayList<>();
@@ -73,7 +76,7 @@ public class DetailFragment extends Fragment {
   public void onStart() {
     super.onStart();
 
-    if (mDetailList.size() == 0) {
+    if ((mDetailList.size() == 0) && (mMovieParcelable != null)) {
       // Check network connection before fetch data.
       NetworkInfo networkInfo = ((ConnectivityManager)getActivity()
           .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();

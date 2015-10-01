@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity implements MovieFragment.Callback {
   private static final String DETAIL_FRAGMENT_TAG = "DETAIL";
+  private boolean mTwoPain = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +19,15 @@ public class MainActivity extends ActionBarActivity implements MovieFragment.Cal
 
     // Tablet UI.
     if (findViewById(R.id.movie_detail_container) != null) {
+      mTwoPain = true;
       Log.d(MainActivity.class.getSimpleName(), "this is tablet.");
       if (savedInstanceState == null) {
         getSupportFragmentManager().beginTransaction()
             .add(R.id.movie_detail_container, new DetailFragment(), DETAIL_FRAGMENT_TAG)
             .commit();
       }
+    } else {
+      mTwoPain = false;
     }
   }
 
@@ -54,5 +58,16 @@ public class MainActivity extends ActionBarActivity implements MovieFragment.Cal
   @Override
   public void onItemSelected(MovieParcelable movieParcelable) {
     Log.d(MainActivity.class.getSimpleName(), "item selected");
+    if (mTwoPain) {
+      Bundle bundle = new Bundle();
+      bundle.putParcelable(MovieFragment.EXTRA_KEY_MOVIE_DATA, movieParcelable);
+      DetailFragment fragment = new DetailFragment();
+      fragment.setArguments(bundle);
+      getSupportFragmentManager().beginTransaction()
+          .replace(R.id.movie_detail_container, fragment, DETAIL_FRAGMENT_TAG).commit();
+    } else {
+      startActivity(new Intent(this, DetailActivity.class)
+          .putExtra(MovieFragment.EXTRA_KEY_MOVIE_DATA, movieParcelable));
+    }
   }
 }
