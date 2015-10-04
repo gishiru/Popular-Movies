@@ -16,8 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 
 /**
@@ -80,13 +78,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
             } else {
               mIsFavorite = true;
               favoriteButton.setImageResource(R.drawable.like_button);
-              new Thread(new Runnable() {
-                public void run() {
-                  Log.d(LOG_TAG, "runnable run");
-                  mPrefs.edit().putString(movieParcelable.id, new Gson().toJson(movieParcelable))
-                      .commit();
-                }
-              }).start();
+              mPrefs.edit().putString("movie ID", movieParcelable.id).commit();
             }
           }
         });
