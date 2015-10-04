@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -115,7 +116,14 @@ public class MovieFragment extends Fragment
       if ((networkInfo != null) && networkInfo.isConnected()) {
         if (mPrefs.getString(getString(R.string.pref_key_sort_order),
             getString(R.string.pref_default_sort_order)).equals("favorites")) {
-          Log.d(LOG_TAG, "favorites " + mPrefs.getString(mMovieList.get(0).id, "no data"));
+          Map<String, ?> map = mPrefs.getAll();
+
+          for (Map.Entry<String, ?> entry : map.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            Log.d(LOG_TAG, "favorites key " + key);
+            Log.d(LOG_TAG, "favorites value " + value);
+          }
         } else {
           // Start background task.
           new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
