@@ -101,6 +101,9 @@ public class DetailFragment extends Fragment {
   }
 
   private class FetchMovieDetailTask extends AsyncTask<Void, Void, Void> {
+    private String mReviewStr = "";
+    private String mTrailerStr = "";
+
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
@@ -146,8 +149,7 @@ public class DetailFragment extends Fragment {
         if (buffer.length() == 0) {
           return null;
         }
-
-        getTrailerDataFromJson(buffer.toString());
+        mTrailerStr = buffer.toString();
 
         // Reset last connection.
         if (urlConnection != null) {
@@ -182,11 +184,8 @@ public class DetailFragment extends Fragment {
           return null;
         }
 
-        getReviewDataFromJson(buffer.toString());
+        mReviewStr = buffer.toString();
       } catch (IOException e) {
-        e.printStackTrace();
-        return null;
-      } catch (JSONException e) {
         e.printStackTrace();
         return null;
       } finally {
@@ -210,6 +209,12 @@ public class DetailFragment extends Fragment {
       super.onPostExecute(aVoid);
 
       // Refresh adapter.
+      try {
+        getTrailerDataFromJson(mTrailerStr);
+        getReviewDataFromJson(mReviewStr);
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
       mDetailAdapter.notifyDataSetChanged();
     }
   }
