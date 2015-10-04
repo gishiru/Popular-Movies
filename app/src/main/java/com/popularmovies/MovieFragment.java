@@ -43,7 +43,7 @@ public class MovieFragment extends Fragment
   /** Constants for building URI to call API. */
   private static final String DISCOVER_ENDPOINT = "discover/movie";
   static final String MOVIE_DB_URL = "http://api.themoviedb.org/3";
-  static final String PARAM_API_KEY = "73430ad81f5c1925ebcbb9d175381cab";
+  static final String PARAM_API_KEY = "";
   private static final String QUERY_SORT_BY = "sort_by";
   static final String QUERY_API_KEY = "api_key";
 
