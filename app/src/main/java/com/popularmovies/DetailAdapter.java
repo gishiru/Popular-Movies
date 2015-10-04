@@ -63,7 +63,7 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
 
         // Get a reference to image buttons, and set click listener.
         final ImageButton favoriteButton = (ImageButton)view.findViewById(R.id.like_dislike_button);
-        if ((mPrefs.getString(movieParcelable.id, "").equals(movieParcelable.id))) {
+        if ((mPrefs.getString("movie ID " + movieParcelable.title, "").equals(movieParcelable.id))) {
           mIsFavorite = true;
           favoriteButton.setImageResource(R.drawable.like_button);
         }
@@ -74,11 +74,13 @@ public class DetailAdapter extends ArrayAdapter<MovieParcelable> {
             if (mIsFavorite) {
               mIsFavorite = false;
               favoriteButton.setImageResource(R.drawable.dislike_button);
-              mPrefs.edit().remove(movieParcelable.id).commit();
+              mPrefs.edit().remove("movie ID " + movieParcelable.title).commit();
             } else {
               mIsFavorite = true;
               favoriteButton.setImageResource(R.drawable.like_button);
-              mPrefs.edit().putString("movie ID", movieParcelable.id).commit();
+              mPrefs.edit().putString("movie ID " + movieParcelable.title, movieParcelable.id)
+                  .commit();
+              Log.d(LOG_TAG, "favorite movie " + movieParcelable.id);
             }
           }
         });

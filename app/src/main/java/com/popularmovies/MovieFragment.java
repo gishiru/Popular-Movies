@@ -60,6 +60,7 @@ public class MovieFragment extends Fragment
   private MovieAdapter mMovieAdapter = null;
   private ArrayList<MovieParcelable> mMovieList = null;
   private SharedPreferences mPrefs = null;
+  private String[] mUrls = null;
 
   public interface Callback {
     public void onItemSelected(MovieParcelable movieParcelable);
@@ -119,22 +120,25 @@ public class MovieFragment extends Fragment
             getString(R.string.pref_default_sort_order)).equals("favorites")) {
           Map<String, ?> map = mPrefs.getAll();
 
+          int i = 0;
+          mUrls = new String[map.size()];
           for (Map.Entry<String, ?> entry : map.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            Log.d(LOG_TAG, "favorites key " + key);
-            Log.d(LOG_TAG, "favorites value " + value);
-
-            // Start background task.
+            String value = entry.getValue().toString();
             if (!value.equals("favorites")) {
-              mFavorite = true;
-              new FetchMovieTask().execute(buildFetchMovieUri(value.toString()), null, null);
-              Log.d(LOG_TAG, "movie ID" + value.toString());
+              mUrls[i] = buildFetchMovieUri(value);
+              Log.d(LOG_TAG, "favorites value " + value);
+              i++;
             }
+          }
+          // Start background task.
+          mFavorite = true;
+          if ((mUrls != null) && (mUrls.length > 0)) {
+            new FetchMovieTask().execute(null, null, null);
           }
         } else {
           // Start background task.
-          new FetchMovieTask().execute(buildFetchMovieUri(), null, null);
+          mUrls = new String[]{buildFetchMovieUri()};
+          new FetchMovieTask().execute(null, null, null);
           Log.d(LOG_TAG, "fetch data");
         }
       } else {
@@ -171,7 +175,7 @@ public class MovieFragment extends Fragment
     }
   }
 
-  class FetchMovieTask extends AsyncTask<String, Void, Void> {
+  class FetchMovieTask extends AsyncTask<Void, Void, Void> {
     static final String REQUEST_METHOD = "GET";
 
     @Override
@@ -184,32 +188,34 @@ public class MovieFragment extends Fragment
     }
 
     @Override
-    protected Void doInBackground(String... uri) {
+    protected Void doInBackground(Void... voids) {
       BufferedReader reader = null;
       HttpURLConnection urlConnection = null;
 
       try {
-        // Create the request to themoviedb.org, and open the connection.
-        urlConnection = (HttpURLConnection) new URL(uri[0]).openConnection();
-        urlConnection.setRequestMethod(REQUEST_METHOD);
-        urlConnection.connect();
+        for (int i = 0; i < mUrls.length; i++) {
+          // Create the request to themoviedb.org, and open the connection.
+          urlConnection = (HttpURLConnection) new URL(mUrls[i]).openConnection();
+          urlConnection.setRequestMethod(REQUEST_METHOD);
+          urlConnection.connect();
 
-        // Read the input stream.
-        InputStream inputStream = urlConnection.getInputStream();
-        if (inputStream == null) {
-          return null;
-        }
-        StringBuffer buffer = new StringBuffer();
-        String line;
-        reader = new BufferedReader(new InputStreamReader(inputStream));
-        while ((line = reader.readLine()) != null) {
-          buffer.append(line + "\n");
-        }
-        if (buffer.length() == 0) {
-          return null;
-        }
+          // Read the input stream.
+          InputStream inputStream = urlConnection.getInputStream();
+          if (inputStream == null) {
+            return null;
+          }
+          StringBuffer buffer = new StringBuffer();
+          String line;
+          reader = new BufferedReader(new InputStreamReader(inputStream));
+          while ((line = reader.readLine()) != null) {
+            buffer.append(line + "\n");
+          }
+          if (buffer.length() == 0) {
+            return null;
+          }
 
-        getMovieDataFromJson(buffer.toString());
+          getMovieDataFromJson(buffer.toString());
+        }
       } catch (IOException e) {
         e.printStackTrace();
         return null;
