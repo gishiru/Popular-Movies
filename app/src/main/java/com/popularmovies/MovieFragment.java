@@ -53,6 +53,7 @@ public class MovieFragment extends Fragment
   /** Log tag. */
   private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
+  private boolean mFavorite = false;
   private GridView mGridView = null;
   private int mIndex = 0;
   private boolean mIsPreferenceChanged = false;
@@ -123,6 +124,13 @@ public class MovieFragment extends Fragment
             Object value = entry.getValue();
             Log.d(LOG_TAG, "favorites key " + key);
             Log.d(LOG_TAG, "favorites value " + value);
+
+            // Start background task.
+            if (!value.equals("favorites")) {
+              mFavorite = true;
+              new FetchMovieTask().execute(buildFetchMovieUri(value.toString()), null, null);
+              Log.d(LOG_TAG, "movie ID" + value.toString());
+            }
           }
         } else {
           // Start background task.
@@ -234,6 +242,7 @@ public class MovieFragment extends Fragment
     @Override
     protected void onPostExecute(Void result) {
       // Refresh adapter and list visible position.
+      mFavorite = false;
       mIsPreferenceChanged = false;
       mMovieAdapter.notifyDataSetChanged();
       mGridView.post(new Runnable() {
@@ -259,7 +268,7 @@ public class MovieFragment extends Fragment
         .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
         .build().toString();
   }
-  
+
   private String buildFetchMovieUri(String movieId) {
     return Uri.parse(MOVIE_DB_URL)
         .buildUpon()
@@ -280,19 +289,35 @@ public class MovieFragment extends Fragment
     final String JSON_KEY_VOTE_AVERAGE = "vote_average";
 
     // Parse JSON string received from API and store it to data set.
-    JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
-    for (int i = 0; i < jsonArray.length(); i++) {
-      mMovieList.add(i, new MovieParcelable(
+    if (mFavorite == false) {
+      JSONArray jsonArray = new JSONObject(movieJsonStr).getJSONArray(JSON_KEY_RESULTS);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        mMovieList.add(i, new MovieParcelable(
+            null,
+            null,
+            jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
+            null,
+            jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
+            null,
+            jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH),
+            jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
+            jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
+            jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
+        ));
+      }
+    } else {
+      JSONObject jsonObject = new JSONObject(movieJsonStr);
+      mMovieList.add(new MovieParcelable(
           null,
           null,
-          jsonArray.getJSONObject(i).getString(JSON_KEY_ID),
+          jsonObject.getString(JSON_KEY_ID),
           null,
-          jsonArray.getJSONObject(i).getString(JSON_KEY_OVERVIEW),
+          jsonObject.getString(JSON_KEY_OVERVIEW),
           null,
-          jsonArray.getJSONObject(i).getString(JSON_KEY_POSTER_PATH),
-          jsonArray.getJSONObject(i).getString(JSON_KEY_RELEASE_DATE),
-          jsonArray.getJSONObject(i).getString(JSON_KEY_TITLE),
-          jsonArray.getJSONObject(i).getString(JSON_KEY_VOTE_AVERAGE)
+          jsonObject.getString(JSON_KEY_POSTER_PATH),
+          jsonObject.getString(JSON_KEY_RELEASE_DATE),
+          jsonObject.getString(JSON_KEY_TITLE),
+          jsonObject.getString(JSON_KEY_VOTE_AVERAGE)
       ));
     }
   }
