@@ -259,6 +259,15 @@ public class MovieFragment extends Fragment
         .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
         .build().toString();
   }
+  
+  private String buildFetchMovieUri(String movieId) {
+    return Uri.parse(MOVIE_DB_URL)
+        .buildUpon()
+        .appendEncodedPath(DetailFragment.MOVIE_ENDPOINT)
+        .appendPath(movieId)
+        .appendQueryParameter(QUERY_API_KEY, PARAM_API_KEY)
+        .build().toString();
+  }
 
   private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
     /** Constants for JSON data. */

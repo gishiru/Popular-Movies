@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class DetailFragment extends Fragment {
   private static final String LOG_TAG = DetailFragment.class.getSimpleName();
-  private static final String MOVIE_ENDPOINT = "movie";
+  static final String MOVIE_ENDPOINT = "movie";
   private static final String REVIEW_ENDPOINT = "reviews";
   private static final String VIDEO_ENDPOINT = "videos";
 
